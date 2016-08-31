@@ -1,2 +1,3 @@
-# csc461-prog1
-hello
+# introcg-prog1
+
+This project contains a simple js program solves program 1.
