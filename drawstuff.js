@@ -54,6 +54,13 @@ class Color {
         }
     } // end Color copy method
     
+        // Color clone method
+    clone() {
+        var newColor = new Color(0,0,0,0);
+        newColor.copy(this);
+        return(newColor);
+    } // end Color clone method
+    
         // Send color to console
     toConsole() {
         console.log(this.r +" "+ this.g +" "+ this.b +" "+ this.a);
@@ -109,8 +116,7 @@ function main() {
     var lrx = 100, lry = 75; // lower right corner position
     
     // Fill the rectangle with interpolated colors
-    var lc = new Color(0,0,0,255);  // left color
-    lc.copy(ulc);
+    var lc = ulc.clone();  // left color
     lc.toConsole(); 
     var rc = new Color(0,0,0,0).copy(urc);  // right color
     for (var y=uly; y<=lly; y++) {
