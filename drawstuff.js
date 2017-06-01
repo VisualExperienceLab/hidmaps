@@ -92,6 +92,7 @@ function main() {
             drawPixel(imagedata,x,y,lrc);
             // console.log("draw at " +x+ " " +y);
         }
+    }
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
