@@ -52,7 +52,12 @@ class Color {
         catch(e) {
             console.log(e);
         }
-    }
+    } // end Color copy method
+    
+        // Send color to console
+    toConsole() {
+        console.log(this.r +" "+ this.g +" "+ this.b +" "+ this.a);
+    }  // end Color toConsole
     
 } // end color class
 
@@ -105,11 +110,12 @@ function main() {
     
     // Fill the rectangle with interpolated colors
     var lc = new Color(0,0,0,0).copy(ulc);  // left color
+    lc.toConsole(); 
     var rc = new Color(0,0,0,0).copy(urc);  // right color
     for (var y=uly; y<=lly; y++) {
         for (var x=ulx; x<=urx; x++) {
             drawPixel(imagedata,x,y,lc);
-            console.log("draw at " +x+ " " +y);
+            // console.log("draw at " +x+ " " +y);
         }
     }
     
