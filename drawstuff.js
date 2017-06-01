@@ -162,7 +162,8 @@ function main() {
     var lc = ulc.clone();  // left color
     var rc = urc.clone();  // right color
     var vDelta = 1 / (uly-lly-1); // norm'd vertical delta
-    var lDelta = vDelta * (); // 
+    var lDelta = llc.clone().subtract(ulc).scale(vDelta); // left vert color delta
+    lDelta.toConsole();
     for (var y=uly; y<=lly; y++) {
         for (var x=ulx; x<=urx; x++) {
             drawPixel(imagedata,x,y,lc);
