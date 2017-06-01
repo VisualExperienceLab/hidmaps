@@ -110,6 +110,7 @@ function main() {
     
     // Fill the rectangle with interpolated colors
     var lc = new Color(0,0,0,255);  // left color
+    lc.copy(ulc);
     lc.toConsole(); 
     var rc = new Color(0,0,0,0).copy(urc);  // right color
     for (var y=uly; y<=lly; y++) {
