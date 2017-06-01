@@ -78,10 +78,18 @@ function main() {
     var imagedata = context.createImageData(w,h);
  
     // Draw a rectangle with pixels
-    var c = new Color(0,0,0,255); // the color at the pixel: black opaque
-    for (var x=50; x<100; x++) 
-        for (var y=50; y<75; y++) {
-            drawPixel(imagedata,x,y,c);
+    // Each corner has a color, which we interpolate across the rectangle
+    var ulc = new Color(255,0,0,255); // upper left corner color: red
+    var urc = new Color(0,255,0,255); // upper right corner color: green
+    var llc = new Color(0,0,255,255); // lower left corner color: blue
+    var lrc = new Color(0,0,0,255); // lower right corner color: black
+    var ulx = 50, uly = 50; // upper left corner position
+    var urx = 100, ury = 50; // upper right corner position
+    var llx = 50, lly = 75; // lower left corner position
+    var lrx = 100, lry = 75; // lower right corner position
+    for (var y=uly; y>=lly; y++) {
+        for (var x=ulx; x<=urx; x++) {
+            drawPixel(imagedata,x,y,lrc);
             // console.log("draw at " +x+ " " +y);
         }
     
