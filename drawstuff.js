@@ -40,6 +40,49 @@ class Color {
         }
     } // end Color change method
     
+        // Color add method
+    add(c) {
+        try {
+            if (!(c instanceof Color))
+                throw "Color.add: non-color parameter";
+            else
+                this.r += c.r; this.g += c.g; this.b += c.b; this.a += c.a;
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+        }
+    } // end color add
+    
+        // Color subtract method
+    subtract(c) {
+        try {
+            if (!(c instanceof Color))
+                throw "Color.subtract: non-color parameter";
+            else
+                this.r -= c.r; this.g -= c.g; this.b -= c.b; this.a -= c.a;
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+        }
+    } // end color subgtract
+    
+        // Color scale method
+    scale(s) {
+        try {
+            if (typeof(s) !== "number")
+                throw "scale factor not a number";
+            else {
+                this.r *= s; this.g *= s; this.b *= s; this.a *= s; 
+            }
+        } // end throw
+        
+        catch (e) {
+            console.log(e);
+        }
+    } // end Color scale method
+    
         // Color copy method
     copy(c) {
         try {
@@ -56,7 +99,7 @@ class Color {
     
         // Color clone method
     clone() {
-        var newColor = new Color(0,0,0,0);
+        var newColor = new Color();
         newColor.copy(this);
         return(newColor);
     } // end Color clone method
@@ -117,14 +160,17 @@ function main() {
     
     // Fill the rectangle with interpolated colors
     var lc = ulc.clone();  // left color
-    lc.toConsole(); 
-    var rc = new Color(0,0,0,0).copy(urc);  // right color
+    var rc = urc.clone();  // right color
+    var vDelta = 1 / (uly-lly-1); // norm'd vertical delta
+    var lDelta = vDelta * (); // 
     for (var y=uly; y<=lly; y++) {
         for (var x=ulx; x<=urx; x++) {
             drawPixel(imagedata,x,y,lc);
             // console.log("draw at " +x+ " " +y);
-        }
-    }
+        } // end horizontal
+        
+        
+    } // end vertical
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
