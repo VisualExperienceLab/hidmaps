@@ -87,7 +87,7 @@ function main() {
     var urx = 100, ury = 50; // upper right corner position
     var llx = 50, lly = 75; // lower left corner position
     var lrx = 100, lry = 75; // lower right corner position
-    for (var y=uly; y>=lly; y++) {
+    for (var y=uly; y<=lly; y++) {
         for (var x=ulx; x<=urx; x++) {
             drawPixel(imagedata,x,y,lrc);
             console.log("draw at " +x+ " " +y);
