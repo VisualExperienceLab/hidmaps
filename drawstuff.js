@@ -170,7 +170,7 @@ function main() {
     // Fill the rectangle with interpolated colors
     var lc = ulc.clone();  // left color
     var rc = urc.clone();  // right color
-    var vDelta = 1 / (lly-uly-1); // norm'd vertical delta
+    var vDelta = 1 / (lly-uly); // norm'd vertical delta
     var lcDelta = llc.clone().subtract(ulc).scale(vDelta); // left vert color delta
     var rcDelta = lrc.clone().subtract(urc).scale(vDelta); // right vert color delta
     for (var y=uly; y<=lly; y++) {
