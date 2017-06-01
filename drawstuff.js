@@ -2,6 +2,7 @@
 
 // Color constructor
 class Color {
+    
     constructor(r,g,b,a) {
         try {
             if ((typeof(r) !== "number") || (typeof(g) !== "number") || (typeof(b) !== "number") || (typeof(a) !== "number"))
@@ -38,6 +39,21 @@ class Color {
             console.log(e);
         }
     } // end Color change method
+    
+        // Color copy method
+    copy(c) {
+        try {
+            if (!(c instanceof Color))
+                throw "Color.copy: non-color parameter";
+            else
+                this.r = c.r; this.g = c.g; this.b = c.b; this.a = c.a;
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+        }
+    }
+    
 } // end color class
 
 
@@ -88,8 +104,8 @@ function main() {
     var lrx = 100, lry = 75; // lower right corner position
     
     // Fill the rectangle with interpolated colors
-    var lc = Object.assign({},ulc);  // left color
-    var rc = Object.assign({},urc);  // right color
+    var lc = new Color(0,0,0,0).copy(ulc);  // left color
+    var rc = new Color(0,0,0,0).copy(urc);  // right color
     for (var y=uly; y<=lly; y++) {
         for (var x=ulx; x<=urx; x++) {
             drawPixel(imagedata,x,y,lc);
