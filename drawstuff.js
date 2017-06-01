@@ -3,7 +3,8 @@
 // Color constructor
 class Color {
     
-    constructor(r,g,b,a) {
+        // Color constructor default opaque black
+    constructor(r=0,g=0,b=0,a=255) {
         try {
             if ((typeof(r) !== "number") || (typeof(g) !== "number") || (typeof(b) !== "number") || (typeof(a) !== "number"))
                 throw "color component not a number";
