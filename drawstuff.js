@@ -171,15 +171,15 @@ function main() {
     var lc = ulc.clone();  // left color
     var rc = urc.clone();  // right color
     var vDelta = 1 / (uly-lly-1); // norm'd vertical delta
-    var lDelta = llc.clone().subtract(ulc).scale(vDelta); // left vert color delta
-    lDelta.toConsole();
+    var lcDelta = llc.clone().subtract(ulc).scale(vDelta); // left vert color delta
+    var rcDelta = lrc.clone().subtract(urc).scale(vDelta); // right vert color delta
     for (var y=uly; y<=lly; y++) {
         for (var x=ulx; x<=urx; x++) {
             drawPixel(imagedata,x,y,lc);
             // console.log("draw at " +x+ " " +y);
         } // end horizontal
-        
-        
+        lc.add(lcDelta);
+        rc.add(rcDelta);
     } // end vertical
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
