@@ -93,7 +93,7 @@ function main() {
     for (var y=uly; y<=lly; y++) {
         for (var x=ulx; x<=urx; x++) {
             drawPixel(imagedata,x,y,lc);
-            // console.log("draw at " +x+ " " +y);
+            console.log("draw at " +x+ " " +y);
         }
     }
     
