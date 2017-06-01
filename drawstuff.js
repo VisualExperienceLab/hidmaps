@@ -185,7 +185,7 @@ function main() {
         hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
         
         for (var x=ulx; x<=urx; x++) {
-            drawPixel(imagedata,x,y,lc);
+            drawPixel(imagedata,x,y,hc);
             
             hc.add(hcDelta).toConsole();
         } // end horizontal
