@@ -77,8 +77,7 @@ function main() {
     var h = context.canvas.height;  // as set in html
     var imagedata = context.createImageData(w,h);
  
-    // Draw a rectangle with pixels
-    // Each corner has a color, which we interpolate across the rectangle
+    // Define a rectangle in 2D with colors and coords at corners
     var ulc = new Color(255,0,0,255); // upper left corner color: red
     var urc = new Color(0,255,0,255); // upper right corner color: green
     var llc = new Color(0,0,255,255); // lower left corner color: blue
@@ -87,10 +86,14 @@ function main() {
     var urx = 100, ury = 50; // upper right corner position
     var llx = 50, lly = 75; // lower left corner position
     var lrx = 100, lry = 75; // lower right corner position
+    
+    // Fill the rectangle with interpolated colors
+    var lc = Object.assign({},ulc);  // left color
+    var rc = Object.assign({},urc);  // right color
     for (var y=uly; y<=lly; y++) {
         for (var x=ulx; x<=urx; x++) {
-            drawPixel(imagedata,x,y,lrc);
-            console.log("draw at " +x+ " " +y);
+            drawPixel(imagedata,x,y,lc);
+            // console.log("draw at " +x+ " " +y);
         }
     }
     
