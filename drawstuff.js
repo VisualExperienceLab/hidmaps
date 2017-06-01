@@ -178,7 +178,7 @@ function main() {
             drawPixel(imagedata,x,y,lc);
             // console.log("draw at " +x+ " " +y);
         } // end horizontal
-        lc.add(lcDelta);
+        lc.add(lcDelta).toConsole();
         rc.add(rcDelta);
     } // end vertical
     
