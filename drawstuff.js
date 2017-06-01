@@ -167,18 +167,29 @@ function main() {
     var llx = 50, lly = 75; // lower left corner position
     var lrx = 100, lry = 75; // lower right corner position
     
-    // Fill the rectangle with interpolated colors
+    // set up the vertical interpolation
     var lc = ulc.clone();  // left color
     var rc = urc.clone();  // right color
     var vDelta = 1 / (lly-uly); // norm'd vertical delta
     var lcDelta = llc.clone().subtract(ulc).scale(vDelta); // left vert color delta
     var rcDelta = lrc.clone().subtract(urc).scale(vDelta); // right vert color delta
+    
+    // set up the horizontal interpolation
+    var hc = new Color(); // horizontal color
+    var hDelta = 1 / (urx-ulx); // norm'd horizontal delta
+    var hcDelta = new Color(); // horizontal color delta
+    
+    // do the interpolation
     for (var y=uly; y<=lly; y++) {
+        hc.copy(lc); // begin with the left color
+        hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
+        
         for (var x=ulx; x<=urx; x++) {
             drawPixel(imagedata,x,y,lc);
-            // console.log("draw at " +x+ " " +y);
+            
+            hc.add(hcDelta).toConsole();
         } // end horizontal
-        lc.add(lcDelta).toConsole();
+        lc.add(lcDelta);
         rc.add(rcDelta);
     } // end vertical
     
