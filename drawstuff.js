@@ -33,6 +33,7 @@ class Color {
                 throw "color component bigger than 255";
             else {
                 this.r = r; this.g = g; this.b = b; this.a = a; 
+                return(this);
             }
         } // end throw
         
@@ -46,8 +47,10 @@ class Color {
         try {
             if (!(c instanceof Color))
                 throw "Color.add: non-color parameter";
-            else
+            else {
                 this.r += c.r; this.g += c.g; this.b += c.b; this.a += c.a;
+                return(this);
+            }
         } // end try
         
         catch(e) {
@@ -60,8 +63,10 @@ class Color {
         try {
             if (!(c instanceof Color))
                 throw "Color.subtract: non-color parameter";
-            else
+            else {
                 this.r -= c.r; this.g -= c.g; this.b -= c.b; this.a -= c.a;
+                return(this);
+            }
         } // end try
         
         catch(e) {
@@ -76,6 +81,7 @@ class Color {
                 throw "scale factor not a number";
             else {
                 this.r *= s; this.g *= s; this.b *= s; this.a *= s; 
+                return(this);
             }
         } // end throw
         
@@ -89,8 +95,10 @@ class Color {
         try {
             if (!(c instanceof Color))
                 throw "Color.copy: non-color parameter";
-            else
+            else {
                 this.r = c.r; this.g = c.g; this.b = c.b; this.a = c.a;
+                return(this);
+            }
         } // end try
         
         catch(e) {
