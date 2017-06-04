@@ -2,7 +2,9 @@
 
 // Color constructor
 class Color {
-    constructor(r,g,b,a) {
+    
+        // Color constructor default opaque black
+    constructor(r=0,g=0,b=0,a=255) {
         try {
             if ((typeof(r) !== "number") || (typeof(g) !== "number") || (typeof(b) !== "number") || (typeof(a) !== "number"))
                 throw "color component not a number";
@@ -31,6 +33,7 @@ class Color {
                 throw "color component bigger than 255";
             else {
                 this.r = r; this.g = g; this.b = b; this.a = a; 
+                return(this);
             }
         } // end throw
         
@@ -38,6 +41,83 @@ class Color {
             console.log(e);
         }
     } // end Color change method
+    
+        // Color add method
+    add(c) {
+        try {
+            if (!(c instanceof Color))
+                throw "Color.add: non-color parameter";
+            else {
+                this.r += c.r; this.g += c.g; this.b += c.b; this.a += c.a;
+                return(this);
+            }
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+        }
+    } // end color add
+    
+        // Color subtract method
+    subtract(c) {
+        try {
+            if (!(c instanceof Color))
+                throw "Color.subtract: non-color parameter";
+            else {
+                this.r -= c.r; this.g -= c.g; this.b -= c.b; this.a -= c.a;
+                return(this);
+            }
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+        }
+    } // end color subgtract
+    
+        // Color scale method
+    scale(s) {
+        try {
+            if (typeof(s) !== "number")
+                throw "scale factor not a number";
+            else {
+                this.r *= s; this.g *= s; this.b *= s; this.a *= s; 
+                return(this);
+            }
+        } // end throw
+        
+        catch (e) {
+            console.log(e);
+        }
+    } // end Color scale method
+    
+        // Color copy method
+    copy(c) {
+        try {
+            if (!(c instanceof Color))
+                throw "Color.copy: non-color parameter";
+            else {
+                this.r = c.r; this.g = c.g; this.b = c.b; this.a = c.a;
+                return(this);
+            }
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+        }
+    } // end Color copy method
+    
+        // Color clone method
+    clone() {
+        var newColor = new Color();
+        newColor.copy(this);
+        return(newColor);
+    } // end Color clone method
+    
+        // Send color to console
+    toConsole() {
+        console.log(this.r +" "+ this.g +" "+ this.b +" "+ this.a);
+    }  // end Color toConsole
+    
 } // end color class
 
 
@@ -77,21 +157,39 @@ function main() {
     var h = context.canvas.height;  // as set in html
     var imagedata = context.createImageData(w,h);
  
-    // Draw a rectangle with pixels
-    // Each corner has a color, which we interpolate across the rectangle
+    // Define a rectangle in 2D with colors and coords at corners
     var ulc = new Color(255,0,0,255); // upper left corner color: red
     var urc = new Color(0,255,0,255); // upper right corner color: green
     var llc = new Color(0,0,255,255); // lower left corner color: blue
     var lrc = new Color(0,0,0,255); // lower right corner color: black
     var ulx = 50, uly = 50; // upper left corner position
-    var urx = 100, ury = 50; // upper right corner position
-    var llx = 50, lly = 75; // lower left corner position
-    var lrx = 100, lry = 75; // lower right corner position
-    for (var y=uly; y>=lly; y++) {
+    var urx = 200, ury = 50; // upper right corner position
+    var llx = 50, lly = 150; // lower left corner position
+    var lrx = 200, lry = 150; // lower right corner position
+    
+    // set up the vertical interpolation
+    var lc = ulc.clone();  // left color
+    var rc = urc.clone();  // right color
+    var vDelta = 1 / (lly-uly); // norm'd vertical delta
+    var lcDelta = llc.clone().subtract(ulc).scale(vDelta); // left vert color delta
+    var rcDelta = lrc.clone().subtract(urc).scale(vDelta); // right vert color delta
+    
+    // set up the horizontal interpolation
+    var hc = new Color(); // horizontal color
+    var hDelta = 1 / (urx-ulx); // norm'd horizontal delta
+    var hcDelta = new Color(); // horizontal color delta
+    
+    // do the interpolation
+    for (var y=uly; y<=lly; y++) {
+        hc.copy(lc); // begin with the left color
+        hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
         for (var x=ulx; x<=urx; x++) {
-            drawPixel(imagedata,x,y,lrc);
-            // console.log("draw at " +x+ " " +y);
-        }
+            drawPixel(imagedata,x,y,hc);
+            hc.add(hcDelta);
+        } // end horizontal
+        lc.add(lcDelta);
+        rc.add(rcDelta);
+    } // end vertical
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
