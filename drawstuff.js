@@ -196,5 +196,5 @@ function main() {
     var poly = new Polygon(xArray,yArray); 
     
     // draw the polygon
-    poly.draw(context,0,h,,-1);
+    poly.draw(context,0,h,1,-1);
 }
