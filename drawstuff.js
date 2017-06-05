@@ -1,5 +1,31 @@
 /* classes */ 
 
+
+// PolygonTree class
+// Polygons can contain multiple subpolys, when split by one or more (parallel) lines
+class PolygonTree
+    
+        // PolygonTree constructor
+        // Creates a root node with the passed poly
+        // Passed poly is cloned, not just pointed to
+    constructor(poly) {
+        try {
+            if (!(poly instanceof Polygon)) 
+                throw "root polygon of tree is not a polygon";
+            else {
+                this.poly = poly.clone(); // the polygon in this node
+                this.cutSlope = null;  // the slope used to cut this node
+                this.cutIntercepts = []; // the locations of cut lines
+                this.parent = null; // parent of this node
+                this.children = []; // children of this node
+            } // end if
+        } // end try
+    } // end constructor
+
+        // Polygon
+} // end PolygonTree class
+
+
 // Polygon class
 class Polygon {
     
@@ -25,6 +51,37 @@ class Polygon {
             console.log(e);
         }
     } // end Polygon constructor
+    
+        // return a deep copy of the polygon
+    clone() {
+        theClone = new Polygon(this.xArray,this.yArray);
+        return(theClone);
+    } // end close
+    
+        // true if passed polygon is same as this one
+    equals(poly) {
+        try {  
+            if (!(poly instanceOf Polygon))
+                throw "cannot compare polygon to non-polygon";
+            else if (this === poly) 
+                return true; // poly is identical to this one
+            else if (this.xArray.length !== poly.xArray.length)
+                return false; // different numbers of x coords
+            else if (this.yArray.length !== poly.yArray.length)
+                return false; // different numbers of y coords
+            else {
+                for (var v=0; v<this.xArray.length; v++)
+                    if (this.xArray[v] !== poly.xArray[v]) return false; // xcoords differ
+                for (var v=0; v<this.xArray.length; v++)
+                    if (this.yArray[v] !== poly.yArray[v]) return false; // ycoords differ
+                return true; // x & y coords are same
+            } // end if
+        } // end try
+        
+        catch(e) {
+            console.log(e); 
+        }
+    } // end equals
     
         // Draws the polygon
         // Expects a canvas' 2d drawing context
@@ -180,7 +237,7 @@ class Color {
     
         // Color clone method
     clone() {
-        var newColor = new Color();
+        var newColor = new Color(); // hmm: is this only local?
         newColor.copy(this);
         return(newColor);
     } // end Color clone method
