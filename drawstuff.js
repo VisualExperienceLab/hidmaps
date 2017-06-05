@@ -62,7 +62,7 @@ class Polygon {
         var area = 0;
         var prevP = this.xArray.length-1;  // prev for vertex 1 is last
 
-        for (p=0; p<xArray.length; p++) { 
+        for (var p=0; p<xArray.length; p++) { 
             area += area +  (xArray[prevP]+xArray[p]) * (yArray[prevP]-yArray[p]); 
             prevP = p;  //j is previous vertex to i
         } // end for points
