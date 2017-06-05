@@ -1,6 +1,65 @@
 /* classes */ 
 
-// Color constructor
+// Polygon class
+class Polygon {
+    
+        // Polygon constructor
+        // Expects two equally sized arrays in X and Y
+        // Each xy pair is a 2D vertex, with first/last connected to close
+        // Copies contents of passed arrays, not just pointers
+    constructor(xArray,yArray) {
+        try {
+            if (!(xArray instanceof Array) || !(yArray instanceof Array))
+                throw "polygon coordinates not an array";
+            else if (xArray.length !== yArray.length) 
+                throw "number of X & Y polygon coordinates do not match";
+            else if (xArray.length >= 3) 
+                throw "described polygon is a line or point";
+            else {
+                this.xArray = xArray.slice(); 
+                this.yArray = yArray.slice();
+            }
+        } // end try
+        
+        catch (e) {
+            console.log(e);
+        }
+    } // end Polygon constructor
+    
+        // Draws the polygon
+        // Expects a canvas' 2d drawing context
+        // Optional parameters allow reset of canvas origin and axis reflection
+    draw(context,ox=0,oy=0,rx=1,ry=1) {
+        try {
+            if ((typeof(ox) !== "number") || (typeof(oy) !== "number") || (typeof(rx) !== "number") || (typeof(ry) !== "number"))
+                throw "polygon draw origin or reflection not a number";
+            else if (((rx !== -1) && (rx !== 1)) || ((ry !== -1) && (ry !== 1)))
+                throw "polygon reflection factor not -1 or 1";
+            else {
+                
+                // set up origin and reflection 
+                context.translate(ox,oy);
+                context.scale(rx,ry); 
+                
+                // draw polygon
+                context.beginPath();
+                context.moveTo(this.xArray[0],this.yArray[0]);
+                for (var p=1; p<this.xArray.length; p++) {
+                    context.lineTo(this.xArray[p],this.yArray[p]);
+                } // end for points
+                context.fill();
+            } // end if
+        } // end try
+        
+        catch (e) {
+            console.log(e);
+        } 
+    } // end draw
+    
+} // end Polygon class
+
+
+// Color class
 class Color {
     
         // Color constructor default opaque black
@@ -121,31 +180,6 @@ class Color {
 } // end color class
 
 
-/* utility functions */
-
-// draw a pixel at x,y using color
-function drawPixel(imagedata,x,y,color) {
-    try {
-        if ((typeof(x) !== "number") || (typeof(y) !== "number"))
-            throw "drawpixel location not a number";
-        else if ((x<0) || (y<0) || (x>=imagedata.width) || (y>=imagedata.height))
-            throw "drawpixel location outside of image";
-        else if (color instanceof Color) {
-            var pixelindex = (y*imagedata.width + x) * 4;
-            imagedata.data[pixelindex] = color.r;
-            imagedata.data[pixelindex+1] = color.g;
-            imagedata.data[pixelindex+2] = color.b;
-            imagedata.data[pixelindex+3] = color.a;
-        } else 
-            throw "drawpixel color is not a Color";
-    } // end try
-    
-    catch(e) {
-        console.log(e);
-    }
-} // end drawPixel
-    
-
 /* main -- here is where execution begins after window load */
 
 function main() {
@@ -155,41 +189,12 @@ function main() {
     var context = canvas.getContext("2d");
     var w = context.canvas.width; // as set in html
     var h = context.canvas.height;  // as set in html
-    var imagedata = context.createImageData(w,h);
  
-    // Define a rectangle in 2D with colors and coords at corners
-    var ulc = new Color(255,0,0,255); // upper left corner color: red
-    var urc = new Color(0,255,0,255); // upper right corner color: green
-    var llc = new Color(0,0,255,255); // lower left corner color: blue
-    var lrc = new Color(0,0,0,255); // lower right corner color: black
-    var ulx = 50, uly = 50; // upper left corner position
-    var urx = 200, ury = 50; // upper right corner position
-    var llx = 50, lly = 150; // lower left corner position
-    var lrx = 200, lry = 150; // lower right corner position
+    // Define a polygon
+    var xArray = {10,20,30};
+    var yArray = {10,20,10}; 
+    var poly = new Polygon(xArray,yArray); 
     
-    // set up the vertical interpolation
-    var lc = ulc.clone();  // left color
-    var rc = urc.clone();  // right color
-    var vDelta = 1 / (lly-uly); // norm'd vertical delta
-    var lcDelta = llc.clone().subtract(ulc).scale(vDelta); // left vert color delta
-    var rcDelta = lrc.clone().subtract(urc).scale(vDelta); // right vert color delta
-    
-    // set up the horizontal interpolation
-    var hc = new Color(); // horizontal color
-    var hDelta = 1 / (urx-ulx); // norm'd horizontal delta
-    var hcDelta = new Color(); // horizontal color delta
-    
-    // do the interpolation
-    for (var y=uly; y<=lly; y++) {
-        hc.copy(lc); // begin with the left color
-        hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
-        for (var x=ulx; x<=urx; x++) {
-            drawPixel(imagedata,x,y,hc);
-            hc.add(hcDelta);
-        } // end horizontal
-        lc.add(lcDelta);
-        rc.add(rcDelta);
-    } // end vertical
-    
-    context.putImageData(imagedata, 0, 0); // display the image in the context
+    // draw the polygon
+    poly.draw(context,0,h,,-1);
 }
