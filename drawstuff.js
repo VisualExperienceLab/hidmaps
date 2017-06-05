@@ -13,7 +13,7 @@ class Polygon {
                 throw "polygon coordinates not an array";
             else if (xArray.length !== yArray.length) 
                 throw "number of X & Y polygon coordinates do not match";
-            else if (xArray.length >= 3) 
+            else if (xArray.length < 3) 
                 throw "described polygon is a line or point";
             else {
                 this.xArray = xArray.slice(); 
