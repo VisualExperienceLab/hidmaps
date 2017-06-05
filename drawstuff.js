@@ -56,6 +56,19 @@ class Polygon {
         } 
     } // end draw
     
+        // returns the area of the polygon
+        // lifted from http://www.mathopenref.com/coordpolygonarea2.html
+    area() {
+        var area = 0;
+        var prevP = this.xArray.length-1;  // prev for vertex 1 is last
+
+        for (p=0; p<xArray.length; p++) { 
+            area += area +  (xArray[prevP]+xArray[p]) * (yArray[prevP]-yArray[p]); 
+            prevP = p;  //j is previous vertex to i
+        } // end for points
+        return area/2;
+    } // end area
+    
 } // end Polygon class
 
 
@@ -197,4 +210,5 @@ function main() {
     
     // draw the polygon
     poly.draw(context,0,h,1,-1);
+    console.log(poly.area());
 }
