@@ -66,7 +66,7 @@ class Polygon {
             area += area +  (this.xArray[prevP]+this.xArray[p]) * (this.yArray[prevP]-this.yArray[p]); 
             prevP = p;  //j is previous vertex to i
         } // end for points
-        return area/2;
+        return Math.abs(area/2);
     } // end area
     
 } // end Polygon class
