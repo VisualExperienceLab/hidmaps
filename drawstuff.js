@@ -3,7 +3,7 @@
 
 // PolygonTree class
 // Polygons can contain multiple subpolys, when split by one or more (parallel) lines
-class PolygonTree
+class PolygonTree {
     
         // PolygonTree constructor
         // Creates a root node with the passed poly
@@ -57,6 +57,51 @@ class Polygon {
         theClone = new Polygon(this.xArray,this.yArray);
         return(theClone);
     } // end close
+    
+        // split the polygon into two new ones, given a line
+        // assumes polygon is convex -> exactly two polygons result from split
+        // expects a slope and an intercept. Slope may be Infinity
+        // returns two new polygons in an object, null if line doesn't split poly
+    split(m,b) {
+        try {
+            if ((typeof(m) !== "number") || (typeof(b) !== "number"))
+                throw "polygon split: pass line param not a number";
+                // later add convexity test
+            else {
+                var vBegin = this.xArray.length; // begin vertex is last poly vertex
+                var p1XArray = [this.xArray[this.xArray.length]]; // x coords of new poly 1
+                var p1XArray = [this.yArray[this.yArray.length]]; // y coords of new poly 1
+                var p2XArray = [], p2YArray = []; // vertices of new poly 2
+                var foundIsect1 = false; // if first intersection found
+                var foundIsect2 = false; // if second intersection found
+                
+                if (!Number.isFinite(m)) { // line is vertical and b is an x coord
+                    for (var e=0; e<this.xArray.length; e++) {
+                        
+                        vBegin = e; // begin vertex is now lead vertex
+                    } // end for edges
+                } else { // line is not vertical
+                } // end line is not vertical
+            } // end if no exceptions
+        } // end throw
+         
+        catch(e) {
+            console.log(e);
+        }
+    } // end split
+    
+        // returns the area of the polygon
+        // lifted from http://www.mathopenref.com/coordpolygonarea2.html
+    area() {
+        var area = 0;
+        var prevP = this.xArray.length-1;  // prev for vertex 1 is last
+
+        for (var p=0; p<this.xArray.length; p++) { 
+            area += (this.xArray[prevP]+this.xArray[p]) * (this.yArray[prevP]-this.yArray[p]); 
+            prevP = p;  //j is previous vertex to i
+        } // end for points
+        return Math.abs(area/2);
+    } // end area
     
         // true if passed polygon is same as this one
     equals(poly) {
@@ -112,19 +157,6 @@ class Polygon {
             console.log(e);
         } 
     } // end draw
-    
-        // returns the area of the polygon
-        // lifted from http://www.mathopenref.com/coordpolygonarea2.html
-    area() {
-        var area = 0;
-        var prevP = this.xArray.length-1;  // prev for vertex 1 is last
-
-        for (var p=0; p<this.xArray.length; p++) { 
-            area += (this.xArray[prevP]+this.xArray[p]) * (this.yArray[prevP]-this.yArray[p]); 
-            prevP = p;  //j is previous vertex to i
-        } // end for points
-        return Math.abs(area/2);
-    } // end area
     
 } // end Polygon class
 
