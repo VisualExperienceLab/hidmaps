@@ -204,8 +204,8 @@ function main() {
     var h = context.canvas.height;  // as set in html
  
     // Define a polygon
-    var xArray = [10,20,30];
-    var yArray = [10,20,10]; 
+    var xArray = [10,210,310];
+    var yArray = [10,110,10]; 
     var poly = new Polygon(xArray,yArray); 
     
     // draw the polygon
