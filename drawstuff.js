@@ -90,7 +90,7 @@ class Polygon {
                 throw "polygon split: passed line is just a point";
                 // later add convexity test
             else {
-                var vBegin = this.xArray.length; // begin vertex is last poly vertex
+                var vBegin = this.xArray.length - 1; // begin vertex is last poly vertex
                 var p1XArray = [this.xArray[this.xArray.length]]; // x coords of new poly 1
                 var p1YArray = [this.yArray[this.yArray.length]]; // y coords of new poly 1
                 var p2XArray = [], p2YArray = []; // vertices of new poly 2
@@ -116,6 +116,7 @@ class Polygon {
                     } // end if edge intersects line
                     currXArray.push(this.xArray[e]);
                     currYArray.push(this.yArray[e]); 
+                    vBegin = e; 
                 } // end for edges
                 
                 if (p2XArray == []) // no split
