@@ -128,7 +128,7 @@ class Polygon {
                         if (!foundIsect1) { // found first intersect
                             foundIsect1 = true; 
                             currXArray = p2XArray; currYArray = p2YArray;
-                        } else if { // found second intersect
+                        } else { // found second intersect
                             foundIsect2 = true; 
                             currXArray = p1XArray; currYArray = p1YArray;
                         } // end if found second intersect
