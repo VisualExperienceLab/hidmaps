@@ -379,7 +379,7 @@ function main() {
     //console.log(poly.area());
     
     // split the polygon
-    var splitResult = poly.split(0,1,-50);
+    var splitResult = poly.split(-1,1,-50);
     if (splitResult == [])
         console.log("No split.");
     else {
