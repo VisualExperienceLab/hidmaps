@@ -394,7 +394,7 @@ function main() {
     //console.log(poly.area());
     
     // split the polygon
-    var splitResult = poly.split(1,-100,2000);
+    var splitResult = poly.split(1,-10,200);
     if (splitResult.length == 0)
         console.log("No split.");
     else {
