@@ -70,7 +70,7 @@ class Polygon {
                 if (edgeVertical) { // just edge vertical
                     console.log("edge vertical");
                     var isectY = ((-a*xBegin - c)/b);
-                    if ((isectY < Math.min(yBegin,yEnd)) || (isectY >= Math.max(yBegin,yEnd))) 
+                    if ((isectY < Math.min(yBegin,yEnd) || (isectY >= Math.max(yBegin,yEnd))
                         return(null); // intersection outside edge
                     else
                         return({x: xBegin, y: isectY }); 
