@@ -69,7 +69,9 @@ class Polygon {
                 } else { // line & edge not vertical
                     console.log("edge not vertical");
                     var me = (yEnd - yBegin) / (xEnd - xBegin); // edge slope
+                    console.log("me: "+me);
                     var ml = -a/b; // line slope
+                    console.log("ml: "+ml);
                     
                     if (me == ml) // lines are parallel
                         return(null); // no intersection
