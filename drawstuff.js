@@ -181,6 +181,7 @@ class Polygon {
             else {
                 
                 // set up origin and reflection 
+                context.save();
                 context.translate(ox,oy);
                 context.scale(rx,ry); 
                 
@@ -191,6 +192,7 @@ class Polygon {
                     context.lineTo(this.xArray[p],this.yArray[p]);
                 } // end for points
                 context.fill();
+                context.restore();
             } // end if
         } // end try
         
