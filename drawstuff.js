@@ -60,12 +60,50 @@ class Polygon {
     
         // split the polygon into two new ones, given a line
         // assumes polygon is convex -> exactly two polygons result from split
-        // expects a slope and an intercept. Slope may be Infinity
-        // returns two new polygons in an object, null if line doesn't split poly
-    split(m,b) {
+        // expects a, b, c in ax + by + c = 0
+        // returns array, empty if line doesn't intersect, else with two new polys
+    split(a,b,c) {
+        
+            // find line edge intersect
+            // returns xy if intersect, null otherwise
+        function findIntersect(vBegin,vEnd) {
+            var xBegin = this.xArray[vBegin], xEnd = this.xArray[vEnd];
+            var yBegin = this.yArray[vBegin], yEnd = this.yArray[vEnd];
+            var edgeVertical = (xBegin == xEnd); 
+            var lineVertical = (b == 0); 
+            
+            if (lineVertical)
+                if (edgeVertical) // line & edge vertical
+                    return(null); // no intersection is possible
+                else { // just line vertical 
+                    var lineX = -c/a; 
+                    var interp = (lineX - xBegin) / (xEnd - xBegin);
+                    return({x: lineX, y: (yBegin + interp*(yEnd - yBegin)) });
+                } // end just line vertical
+            else // line not vertical
+                if (edgeVertical) // just edge vertical
+                    return({x: xBegin, y: ((-a*xBegin - c)/b) }); 
+                else { // line & edge not vertical
+                    var me = (yEnd - yBegin) / (xEnd - xBegin); // edge slope
+                    var ml = -a/b; // line slope
+                    
+                    if (me == ml) // lines are parallel
+                        return(null); // no intersection
+                    else { // line and edge are not parallel
+                        var be = yBegin - me*xBegin; // edge intercept
+                        var bl = -c/b; // line intercept
+                        var isectX = (be - bl) / (ml - me);
+                        var isectY = (ml*be - me*bl) / (ml - me); 
+                        return({x: isectX, y: isectY});
+                    } // end line and edge are not parallel
+                } // end line & edge not vertica
+        } // end findIntersect
+        
         try {
-            if ((typeof(m) !== "number") || (typeof(b) !== "number"))
-                throw "polygon split: pass line param not a number";
+            if ((typeof(a) !== "number") || (typeof(b) !== "number") || (typeof(c) !== "number"))
+                throw "polygon split: passed line param not a number";
+            else if ((a == 0) && (b == 0))
+                throw "polygon split: passed line is just a point";
                 // later add convexity test
             else {
                 var vBegin = this.xArray.length; // begin vertex is last poly vertex
@@ -75,28 +113,30 @@ class Polygon {
                 var currXArray = p1XArray, currYArray = p1YArray; // which new poly we add to
                 var foundIsect1 = false; // if first intersection found
                 var foundIsect2 = false; // if second intersection found
-                
-                if (!Number.isFinite(m)) { // line is vertical and b is an x coord
-                    var xBegin, xEnd, yIsect; 
-                    for (var e=0; e<this.xArray.length; e++) {
-                        xBegin = this.xArray[vBegin];
-                        xEnd = this.xArray[e];
-                        if (xBegin == xEnd) 
-                        if ((b <= xBegin) || (b > xEnd)) { // edge doesn't intersect
-                            currXArray.push(xEnd);
-                            currYArray.push(this.yArray[e]); 
-                        } else if (!foundIsect1) { // found first intersect
+                var isectPoint; // the intersection point
+                    
+                    // move through poly edges, test for intersections, build two new polys
+                for (var e=0; e<this.xArray.length; e++) { 
+                    isectPoint = findIntersect(vBegin,e);
+                    if (isectPoint != null) { // edge intersects line
+                        p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
+                        p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
+                        if (!foundIsect1) { // found first intersect
                             foundIsect1 = true; 
-                            yIsect = 
-                            currXArray.push(b)
-                        } else if (!foundIsect2) {
-                            foundIsect2 = ((b > xBegin) && (b <= xEnd));
-                        } else { // found neither intersect
-                        } // found neither intersect
-                        vBegin = e; // begin vertex is now end vertex
-                    } // end for edges
-                } else { // line is not vertical
-                } // end line is not vertical
+                            currXArray = p2XArray; currYArray = p2YArray;
+                        } else if { // found second intersect
+                            foundIsect2 = true; 
+                            currXArray = p1XArray; currYArray = p1YArray;
+                        } // end if found second intersect
+                    } // end if edge intersects line
+                    currXArray.push(this.xArray[e]);
+                    currYArray.push(this.yArray[e]); 
+                } // end for edges
+                
+                if (p2XArray == []) // no split
+                    return([]);
+                else 
+                    return([new Polygon(p1XArray,p1YArray), new Polygon(p2XArray,p2YArray)]);
             } // end if no exceptions
         } // end throw
          
@@ -313,6 +353,15 @@ function main() {
     var poly = new Polygon(xArray,yArray); 
     
     // draw the polygon
-    poly.draw(context,0,h,1,-1);
-    console.log(poly.area());
-}
+    //poly.draw(context,0,h,1,-1);
+    //console.log(poly.area());
+    
+    // split the polygon
+    var splitResult = poly.split(1,0,-210);
+    if (splitResult == [])
+        console.log("No split.");
+    else {
+        splitResult[0].draw(context,0,h,1,-1);
+        splitResult[1].draw(context,0,h-1,1,-1);
+    }
+} // end main
