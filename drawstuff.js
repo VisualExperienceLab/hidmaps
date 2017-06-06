@@ -41,9 +41,9 @@ class Polygon {
         
             // find line edge intersect
             // returns xy if intersect, null otherwise
-        function findIntersect(vBegin,vEnd) {
-            var xBegin = this.xArray[vBegin], xEnd = this.xArray[vEnd];
-            var yBegin = this.yArray[vBegin], yEnd = this.yArray[vEnd];
+        function findIntersect(poly,vBegin,vEnd) {
+            var xBegin = poly.xArray[vBegin], xEnd = poly.xArray[vEnd];
+            var yBegin = poly.yArray[vBegin], yEnd = poly.yArray[vEnd];
             var edgeVertical = (xBegin == xEnd); 
             var lineVertical = (b == 0); 
             
