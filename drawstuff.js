@@ -53,10 +53,11 @@ class Polygon {
                     console.log("edge vertical");
                     return(null); // no intersection is possible
                 } else { // just line vertical 
-                    console.log("edge note vertical");
+                    console.log("edge not vertical");
                     var lineX = -c/a; 
                     var interp = (lineX - xBegin) / (xEnd - xBegin);
-                    return({x: lineX, y: (yBegin + interp*(yEnd - yBegin)) });
+                    var isectY = yBegin + interp*(yEnd - yBegin);
+                    return({x: lineX, y: isectY });
                 } // end just line vertical
             } else // line not vertical
                 console.log("line not vertical")
