@@ -136,9 +136,9 @@ class Polygon {
         // true if passed polygon is same as this one
     equals(poly) {
         try {  
-            if (!(poly instanceOf Polygon))
+            /*if (!(poly instanceOf Polygon))
                 throw "cannot compare polygon to non-polygon";
-            else if (this === poly) 
+            else */if (this === poly) 
                 return true; // poly is identical to this one
             else if (this.xArray.length !== poly.xArray.length)
                 return false; // different numbers of x coords
