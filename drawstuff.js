@@ -1,35 +1,6 @@
 /* classes */ 
 
 
-// PolygonTree class
-// Polygons can contain multiple subpolys, when split by one or more (parallel) lines
-class PolygonTree {
-    
-        // PolygonTree constructor
-        // Creates a root node with the passed poly
-        // Passed poly is cloned, not just pointed to
-    constructor(poly) {
-        try {
-            if (!(poly instanceof Polygon)) 
-                throw "root polygon of tree is not a polygon";
-            else {
-                this.poly = poly.clone(); // the polygon in this node
-                this.cutSlope = null;  // the slope used to cut this node
-                this.cutIntercepts = []; // the locations of cut lines
-                this.parent = null; // parent of this node
-                this.children = []; // children of this node
-            } // end if
-        } // end try
-        
-        catch(e) {
-            console.log(e);
-        }
-    } // end constructor
-
-        // Polygon
-} // end PolygonTree class
-
-
 // Polygon class
 class Polygon {
     
@@ -218,6 +189,35 @@ class Polygon {
     } // end draw
     
 } // end Polygon class
+
+
+// PolygonTree class
+// Polygons can contain multiple subpolys, when split by one or more (parallel) lines
+class PolygonTree {
+    
+        // PolygonTree constructor
+        // Creates a root node with the passed poly
+        // Passed poly is cloned, not just pointed to
+    constructor(poly) {
+        try {
+            if (!(poly instanceof Polygon)) 
+                throw "root polygon of tree is not a polygon";
+            else {
+                this.poly = poly.clone(); // the polygon in this node
+                this.cutSlope = null;  // the slope used to cut this node
+                this.cutIntercepts = []; // the locations of cut lines
+                this.parent = null; // parent of this node
+                this.children = []; // children of this node
+            } // end if
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+        }
+    } // end constructor
+
+        // Polygon
+} // end PolygonTree class
 
 
 // Color class
