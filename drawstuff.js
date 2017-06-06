@@ -385,8 +385,8 @@ function main() {
     var h = context.canvas.height;  // as set in html
  
     // Define a polygon
-    var xArray = [10,210,310];
-    var yArray = [10,110,10]; 
+    var xArray = [-120,-50,50,120,50,-50];
+    var yArray = [0,70,70,0,-70,-70]; 
     var poly = new Polygon(xArray,yArray); 
     
     // draw the polygon
@@ -394,11 +394,11 @@ function main() {
     //console.log(poly.area());
     
     // split the polygon
-    var splitResult = poly.split(1,-10,200);
+    var splitResult = poly.split(1,1,0);
     if (splitResult.length == 0)
         console.log("No split.");
     else {
-        splitResult[0].draw(context,0,h,1,-1);
-        splitResult[1].draw(context,0,h-1,1,-1);
+        splitResult[0].draw(context,w/2,h/2,1,-1);
+        splitResult[1].draw(context,w/2,h/2,1,-1);
     }
 } // end main
