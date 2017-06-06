@@ -70,15 +70,30 @@ class Polygon {
             else {
                 var vBegin = this.xArray.length; // begin vertex is last poly vertex
                 var p1XArray = [this.xArray[this.xArray.length]]; // x coords of new poly 1
-                var p1XArray = [this.yArray[this.yArray.length]]; // y coords of new poly 1
+                var p1YArray = [this.yArray[this.yArray.length]]; // y coords of new poly 1
                 var p2XArray = [], p2YArray = []; // vertices of new poly 2
+                var currXArray = p1XArray, currYArray = p1YArray; // which new poly we add to
                 var foundIsect1 = false; // if first intersection found
                 var foundIsect2 = false; // if second intersection found
                 
                 if (!Number.isFinite(m)) { // line is vertical and b is an x coord
+                    var xBegin, xEnd, yIsect; 
                     for (var e=0; e<this.xArray.length; e++) {
-                        
-                        vBegin = e; // begin vertex is now lead vertex
+                        xBegin = this.xArray[vBegin];
+                        xEnd = this.xArray[e];
+                        if (xBegin == xEnd) 
+                        if ((b <= xBegin) || (b > xEnd)) { // edge doesn't intersect
+                            currXArray.push(xEnd);
+                            currYArray.push(this.yArray[e]); 
+                        } else if (!foundIsect1) { // found first intersect
+                            foundIsect1 = true; 
+                            yIsect = 
+                            currXArray.push(b)
+                        } else if (!foundIsect2) {
+                            foundIsect2 = ((b > xBegin) && (b <= xEnd));
+                        } else { // found neither intersect
+                        } // found neither intersect
+                        vBegin = e; // begin vertex is now end vertex
                     } // end for edges
                 } else { // line is not vertical
                 } // end line is not vertical
