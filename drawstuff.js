@@ -135,9 +135,11 @@ class Polygon {
                     vBegin = e; 
                 } // end for edges
                 
-                if (p2XArray == []) // no split
+                if (p2XArray == []) { // no split
+                    console.log("There was no split");
                     return([]);
-                else 
+                } else {
+                    console.log("There was a split");
                     return([new Polygon(p1XArray,p1YArray), new Polygon(p2XArray,p2YArray)]);
             } // end if no exceptions
         } // end throw
