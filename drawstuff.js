@@ -141,6 +141,7 @@ class Polygon {
                 } else {
                     console.log("There was a split");
                     return([new Polygon(p1XArray,p1YArray), new Polygon(p2XArray,p2YArray)]);
+                } // end if a split
             } // end if no exceptions
         } // end throw
          
