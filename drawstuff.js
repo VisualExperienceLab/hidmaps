@@ -134,8 +134,8 @@ class Polygon {
                     currYArray.push(this.yArray[e]); 
                     vBegin = e; 
                 } // end for edges
-                console.log(p1XArray.tostring());
-                console.log(p2XArray.tostring());
+                console.log(p1XArray.toString());
+                console.log(p2XArray.toString());
                 
                 if (p2XArray == []) { // no split
                     console.log("There was no split");
