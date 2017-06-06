@@ -56,7 +56,9 @@ class Polygon {
                     console.log("edge not vertical");
                     var lineX = -c/a; 
                     var interp = (lineX - xBegin) / (xEnd - xBegin);
+                    console.log("interp: " + interp);
                     var isectY = yBegin + interp*(yEnd - yBegin);
+                    console.log("isectY: " + isectY);
                     return({x: lineX, y: isectY });
                 } // end just line vertical
             } else // line not vertical
