@@ -88,7 +88,7 @@ class Polygon {
                         var bl = -c/b; // line intercept
                         var isectX = (be - bl) / (ml - me);
                         var isectY = (ml*be - me*bl) / (ml - me); 
-                        if ((isectX < Math.min(xBegin,xEnd)) || (isectX >= Math.max(xBegin,xEnd))
+                        if ((isectX < Math.min(xBegin,xEnd) || (isectX >= Math.max(xBegin,xEnd))
                             return(null); // intersection outside edge
                         else 
                             return({x: isectX, y: isectY});
