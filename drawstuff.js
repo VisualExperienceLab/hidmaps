@@ -47,18 +47,24 @@ class Polygon {
             var edgeVertical = (xBegin == xEnd); 
             var lineVertical = (b == 0); 
             
-            if (lineVertical)
-                if (edgeVertical) // line & edge vertical
+            if (lineVertical) {
+                console.log("line vertical");
+                if (edgeVertical) { // line & edge vertical
+                    console.log("edge vertical");
                     return(null); // no intersection is possible
-                else { // just line vertical 
+                } else { // just line vertical 
+                    console.log("edge note vertical");
                     var lineX = -c/a; 
                     var interp = (lineX - xBegin) / (xEnd - xBegin);
                     return({x: lineX, y: (yBegin + interp*(yEnd - yBegin)) });
                 } // end just line vertical
-            else // line not vertical
-                if (edgeVertical) // just edge vertical
+            } else // line not vertical
+                console.log("line not vertical")
+                if (edgeVertical) { // just edge vertical
+                    console.log("edge vertical");
                     return({x: xBegin, y: ((-a*xBegin - c)/b) }); 
-                else { // line & edge not vertical
+                } else { // line & edge not vertical
+                    console.log("edge not vertical");
                     var me = (yEnd - yBegin) / (xEnd - xBegin); // edge slope
                     var ml = -a/b; // line slope
                     
