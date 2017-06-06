@@ -57,15 +57,23 @@ class Polygon {
                     var lineX = -c/a; 
                     var interp = (lineX - xBegin) / (xEnd - xBegin);
                     console.log("interp: " + interp);
-                    var isectY = yBegin + interp*(yEnd - yBegin);
-                    console.log("isectY: " + isectY);
-                    return({x: lineX, y: isectY });
+                    if ((interp < 0) || (interp >= 1))
+                        return(null); // intersection outside edge
+                    else {
+                        var isectY = yBegin + interp*(yEnd - yBegin);
+                        console.log("isectY: " + isectY);
+                        return({x: lineX, y: isectY });
+                    } // end if intersect outside edge
                 } // end just line vertical
             } else // line not vertical
                 console.log("line not vertical")
                 if (edgeVertical) { // just edge vertical
                     console.log("edge vertical");
-                    return({x: xBegin, y: ((-a*xBegin - c)/b) }); 
+                    var isectY = ((-a*xBegin - c)/b);
+                    if ((isectY < Math.min(yBegin,yEnd)) || (isectY >= Math.max(yBegin,yEnd))) 
+                        return(null); /intersection outside edge
+                    else
+                        return({x: xBegin, y: isectY }); 
                 } else { // line & edge not vertical
                     console.log("edge not vertical");
                     var me = (yEnd - yBegin) / (xEnd - xBegin); // edge slope
@@ -80,6 +88,7 @@ class Polygon {
                         var bl = -c/b; // line intercept
                         var isectX = (be - bl) / (ml - me);
                         var isectY = (ml*be - me*bl) / (ml - me); 
+                        // ADD: now determine if isect outside poly
                         return({x: isectX, y: isectY});
                     } // end line and edge are not parallel
                 } // end line & edge not vertica
