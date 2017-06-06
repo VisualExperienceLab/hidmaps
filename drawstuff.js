@@ -92,7 +92,7 @@ class Polygon {
                     
                     // move through poly edges, test for intersections, build two new polys
                 for (var e=0; e<this.xArray.length; e++) { 
-                    isectPoint = findIntersect(vBegin,e);
+                    isectPoint = findIntersect(this,vBegin,e);
                     console.log(isectPoint.x +" "+ isectPoint.y);
                     if (isectPoint != null) { // edge intersects line
                         p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
