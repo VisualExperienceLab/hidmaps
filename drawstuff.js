@@ -20,6 +20,10 @@ class PolygonTree {
                 this.children = []; // children of this node
             } // end if
         } // end try
+        
+        catch(e) {
+            console.log(e);
+        }
     } // end constructor
 
         // Polygon
