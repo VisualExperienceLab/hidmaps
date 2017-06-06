@@ -104,8 +104,7 @@ class Polygon {
                 // later add convexity test
             else {
                 var vBegin = this.xArray.length - 1; // begin vertex is last poly vertex
-                var p1XArray = [this.xArray[this.xArray.length-1]]; // x coords of new poly 1
-                var p1YArray = [this.yArray[this.yArray.length-1]]; // y coords of new poly 1
+                var p1XArray = [], p1YArray = []; // vertices of new poly 1
                 var p2XArray = [], p2YArray = []; // vertices of new poly 2
                 var currXArray = p1XArray, currYArray = p1YArray; // which new poly we add to
                 var foundIsect1 = false; // if first intersection found
@@ -114,6 +113,8 @@ class Polygon {
                     
                     // move through poly edges, test for intersections, build two new polys
                 for (var e=0; e<this.xArray.length; e++) { 
+                    currXArray.push(this.xArray[vBegin]);
+                    currYArray.push(this.yArray[vBegin]); 
                     isectPoint = findIntersect(this,vBegin,e);
                     if (isectPoint == null)
                         console.log("no intersection");
@@ -130,8 +131,6 @@ class Polygon {
                             currXArray = p1XArray; currYArray = p1YArray;
                         } // end if found second intersect
                     } // end if edge intersects line
-                    currXArray.push(this.xArray[e]);
-                    currYArray.push(this.yArray[e]); 
                     vBegin = e; 
                 } // end for edges
                 console.log(p1XArray.toString());
