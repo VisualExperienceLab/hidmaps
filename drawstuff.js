@@ -119,7 +119,7 @@ class Polygon {
                         console.log("no intersection");
                     else    
                         console.log(isectPoint.x +" "+ isectPoint.y);
-                    if (isectPoint != null) { // edge intersects line
+                    if (isectPoint !== null) { // edge intersects line
                         p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
                         p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                         if (!foundIsect1) { // found first intersect
