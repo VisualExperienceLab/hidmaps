@@ -151,6 +151,16 @@ class Polygon {
         }
     } // end split
     
+        // split polygon into two parts by proportional area
+        // assumes polygon is convex -> two parts result from linear cut
+        // expect a slope (Infinity -> vertical) and target normalized area a in (0,1)
+        // returns two part poly split by line with passed slope, one part with 
+        // approx normalized area a, the other approx area 1-a.
+    splitByArea(a,m) {
+        var la, lb, lc; // split line a b c coefficients
+        
+    } // end splitbyarea
+    
         // returns the area of the polygon
         // lifted from http://www.mathopenref.com/coordpolygonarea2.html
     area() {
