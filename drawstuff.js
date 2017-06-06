@@ -113,7 +113,7 @@ class Polygon {
                 var isectPoint; // the intersection point
                     
                     // move through poly edges, test for intersections, build two new polys
-                for (var e=0; e<this.xArray.length-1; e++) { 
+                for (var e=0; e<this.xArray.length; e++) { 
                     isectPoint = findIntersect(this,vBegin,e);
                     if (isectPoint == null)
                         console.log("no intersection");
@@ -396,7 +396,7 @@ function main() {
     
     // split the polygon
     var splitResult = poly.split(-1,1,-50);
-    if (splitResult == [])
+    if (splitResult.length == 0)
         console.log("No split.");
     else {
         splitResult[0].draw(context,0,h,1,-1);
