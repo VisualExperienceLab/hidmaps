@@ -158,7 +158,17 @@ class Polygon {
         // approx normalized area a, the other approx area 1-a.
     splitByArea(a,m) {
         var la, lb, lc; // split line a b c coefficients
+        var areaLessThan = 0;
+        var areaGreaterThan = 1;
+        const polyArea = this.area();
         
+        // find the first edge that straddles the right splitting line
+        var prevV = this.xArray.length-1; 
+        for (var e=0; e<this.xArray.length; e++) {
+            
+        
+        
+        // try 100 lines within the straddling edge, return the best
     } // end splitbyarea
     
         // returns the area of the polygon
