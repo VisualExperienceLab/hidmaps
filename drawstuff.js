@@ -203,7 +203,7 @@ class Polygon {
                     beginAreaLess = endAreaLess; 
                     endV++; 
                     endAreaLess = isSplitAreaLess(this,endV);
-                } while ((beginAreaLess != endAreaLess) && (endV < (this.xArray.length-1)));
+                } while ((beginAreaLess == endAreaLess) && (endV < (this.xArray.length-1)));
 
                 if (beginAreaLess == endAreaLess)
                     return([]);
