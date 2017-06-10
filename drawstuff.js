@@ -166,6 +166,7 @@ class Polygon {
             const polyArea = poly.area(); // the area of the poly to split
 
             console.log("Split at: " +poly.xArray[vertex]+","+poly.yArray[vertex]);
+            console.log("Poly area: " + polyArea);
             
             // set split line coefficients
             if (!isFinite(m)) { // infinite
