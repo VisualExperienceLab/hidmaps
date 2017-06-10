@@ -165,6 +165,8 @@ class Polygon {
         // compare area of split produced through a certain vertex to a
         function isSplitAreaLess(poly,vertex) {
 
+            console.log("Split at: " +poly.xArray[vertex]+","+poly.yArray[vertex]);
+            
             // set split line coefficients
             if (!isFinite(m)) { // infinite
                 al = 1; bl = 0; cl = -poly.xArray[vertex]; 
@@ -172,6 +174,8 @@ class Polygon {
                 al = -m; bl = 1; 
                 cl = -(poly.yArray[vertex] - m*poly.xArray[vertex]);
             } // end if finite
+            
+            console.log("  Use line: " +al+" "+bl+" "+cl); 
             
             // get the area at the first vertex
             var area = poly.split(al,bl,cl);
@@ -182,6 +186,8 @@ class Polygon {
                 area = area <= 0.5 ? area : 1 - area;
             } // end if polygon split
 
+            console.log("Less than: " + (area<a ? "true" : "false"));
+            
             return(area < a); 
         } // end is split area less
         
