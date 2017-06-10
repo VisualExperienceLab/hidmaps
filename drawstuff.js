@@ -457,15 +457,15 @@ function main() {
     var poly = new Polygon(xArray,yArray); 
     
     // draw the polygon
-    poly.draw(context,w/2,h/2,1,-1);
+    // poly.draw(context,w/2,h/2,1,-1);
     //console.log(poly.area());
     
-    /* // split the polygon
+    // split the polygon
     var splitResult = poly.splitByArea(0.5,-1);
     if (splitResult.length == 0)
         console.log("No split.");
     else {
         splitResult[0].draw(context,w/2,h/2,1,-1);
         splitResult[1].draw(context,w/2,h/2,1,-1);
-    } */
+    }
 } // end main
