@@ -452,7 +452,7 @@ function main() {
     var incr = 2* Math.PI / n;
     var xArray = [], yArray = []; 
     for (var a=0; a<2*Math.PI; a+=incr) {
-        xArray.push(Math.cos(a)); yArray.push(Math.sin(a));
+        xArray.push(r*Math.cos(a)); yArray.push(r*Math.sin(a));
     } // end for sides
     var poly = new Polygon(xArray,yArray); 
     
