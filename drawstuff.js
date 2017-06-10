@@ -183,11 +183,11 @@ class Polygon {
             if (area.length == 0)
                 area = 0;
             else { // the polygon is split
-                area = area[0].area / polyArea;
+                area = area[0].area() / polyArea;
                 area = area <= 0.5 ? area : 1 - area;
             } // end if polygon split
 
-            console.log(area + (area<a ? " less than " : " greather than ") + a);
+            console.log(area + (area<a ? " less than " : " greater than ") + a);
             
             return(area < a); 
         } // end is split area less
