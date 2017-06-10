@@ -182,10 +182,8 @@ class Polygon {
             var area = poly.split(al,bl,cl);
             if (area.length == 0)
                 area = 0;
-            else { // the polygon is split
+            else // the polygon is split
                 area = area[0].area() / polyArea;
-                area = area <= 0.5 ? area : 1 - area;
-            } // end if polygon split
 
             console.log(area + (area<a ? " less than " : " greater than ") + a);
             
@@ -198,7 +196,6 @@ class Polygon {
             else {
         
                 // look for an edge that straddles the ideal area
-                a = (a > 5) ? 1-a : a; 
                 endAreaLess = isSplitAreaLess(this,endV); 
                 do {
                     beginV = endV;
