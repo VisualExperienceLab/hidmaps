@@ -169,7 +169,7 @@ class Polygon {
             if (!isFinite(m)) { // infinite
                 al = 1; bl = 0; cl = -poly.xArray[vertex]; 
             } else { // finite
-                al = -ml bl = 1; 
+                al = -m; bl = 1; 
                 cl = -(poly.yArray[vertex] - m*poly.xArray[vertex]);
             } // end if finite
             
