@@ -157,13 +157,13 @@ class Polygon {
         // returns two part poly split by line with passed slope, one part with 
         // approx normalized area a, the other approx area 1-a.
     splitByArea(a,m) {
-        const polyArea = this.area(); // the area of the poly to split
         var beginAreaLess, endAreaLess; // if split through edge vertices < a
         var beginV, endV = 0; // edge vertex indices
         var al, bl, cl; // split line coefficients
         
         // compare area of split produced through a certain vertex to a
         function isSplitAreaLess(poly,vertex) {
+            const polyArea = poly.area(); // the area of the poly to split
 
             console.log("Split at: " +poly.xArray[vertex]+","+poly.yArray[vertex]);
             
