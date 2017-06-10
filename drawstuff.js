@@ -157,18 +157,60 @@ class Polygon {
         // returns two part poly split by line with passed slope, one part with 
         // approx normalized area a, the other approx area 1-a.
     splitByArea(a,m) {
-        var la, lb, lc; // split line a b c coefficients
-        var areaLessThan = 0;
-        var areaGreaterThan = 1;
-        const polyArea = this.area();
+        const polyArea = this.area(); // the area of the poly to split
+        var beginAreaLess, endAreaLess; // if split through edge vertices < a
+        var beginV, endV = 0; // edge vertex indices
+        var al, bl, cl; // split line coefficients
         
-        // find the first edge that straddles the right splitting line
-        var prevV = this.xArray.length-1; 
-        for (var e=0; e<this.xArray.length; e++) {
+        // compare area of split produced through a certain vertex to a
+        function isSplitAreaLess(poly,vertex) {
+
+            // set split line coefficients
+            if (!isFinite(m)) { // infinite
+                al = 1; bl = 0; cl = -(poly.xArray[vertex]; 
+            else { // finite
+                al = -ml bl = 1; 
+                cl = -(poly.yArray[vertex] - m*poly.xArray[vertex]);
+            } // end if finite
             
+            // get the area at the first vertex
+            var area = poly.split(al,bl,cl);
+            if (area.length == 0)
+                area = 0;
+            else { // the polygon is split
+                area = area[0].area / polyArea;
+                area = area <= 0.5 ? area : 1 - area;
+            } // end if polygon split
+
+            return(area < a); 
+        } // end is split area less
         
+        try {
+            if ((a <= 0) || (a >= 1))
+                throw "split poly by area: target area not in (0,1)";
+            else {
+        
+                // look for an edge that straddles the ideal area
+                endAreaLess = isSplitAreaLess(this,endV); 
+                do {
+                    beginV = endV;
+                    beginAreaLess = endAreaLess; 
+                    endV++; 
+                    endAreaLess = isSplitAreaLess(this,endV);
+                } while ((beginAreaLess !== endAreaLess) && (endV < (this.xArray.length-1)));
+
+                if (beginAreaLess == endAreaLess)
+                    return([]);
+                else
+                    return(this.split(al,bl,cl));
+            } // end area param ok
+        } // end try
         
         // try 100 lines within the straddling edge, return the best
+        
+        catch(e) {
+            console.log(e);
+        }
     } // end splitbyarea
     
         // returns the area of the polygon
@@ -404,9 +446,14 @@ function main() {
     var w = context.canvas.width; // as set in html
     var h = context.canvas.height;  // as set in html
  
-    // Define a polygon
-    var xArray = [-120,-50,50,120,50,-50];
-    var yArray = [0,70,70,0,-70,-70]; 
+    // Define a circle polygon with n sides
+    var n = 12; 
+    var r = 150; 
+    var incr = 2* Math.PI / n;
+    var xArray = [], yArray = []; 
+    for (var a=0; a<2*Math.PI; a+=incr) {
+        xArray.push(Math.cos(a)); yArray.push(Math.sin(a));
+    } // end for sides
     var poly = new Polygon(xArray,yArray); 
     
     // draw the polygon
@@ -414,7 +461,7 @@ function main() {
     //console.log(poly.area());
     
     // split the polygon
-    var splitResult = poly.split(1,1,0);
+    var splitResult = poly.splitByArea(0.5,-1);
     if (splitResult.length == 0)
         console.log("No split.");
     else {
