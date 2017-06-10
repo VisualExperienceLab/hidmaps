@@ -198,6 +198,7 @@ class Polygon {
             else {
         
                 // look for an edge that straddles the ideal area
+                a = (a > 5) ? 1-a : a; 
                 endAreaLess = isSplitAreaLess(this,endV); 
                 do {
                     beginV = endV;
