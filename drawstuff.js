@@ -186,7 +186,7 @@ class Polygon {
                 area = area <= 0.5 ? area : 1 - area;
             } // end if polygon split
 
-            console.log("Less than: " + (area<a ? "true" : "false"));
+            console.log(area + (area<a ? " less than " : " greather than ") + a);
             
             return(area < a); 
         } // end is split area less
