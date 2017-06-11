@@ -193,11 +193,17 @@ class Polygon {
             if ((a <= 0) || (a >= 1))
                 throw "split poly by area: target area not in (0,1)";
             else {
-                var beginV, endV = Number.MIN_VALUE; // edge vertex indices
+                var beginV, endV; // edge vertex indices
+                var dist, maxDist = Number.MIN_VALUE;
                 
                 // find the vertex farthest from the line
-                for (var v=0; v<this.xArray.length; v++)
-                    endV = Math.min(endV,this.yArray[v]-m*this.xArray[v]);
+                for (var v=0; v<this.xArray.length; v++) {
+                    dist = this.yArray[v] - m*this.xArray[v];
+                    if (dist > maxDist) {
+                        maxDist = dist;
+                        endV = v;
+                    } // end if new max
+                } // end for each vertex                        
                 
                 // look for an edge that straddles the ideal area
                 endAreaLess = isSplitAreaLess(this,endV); 
@@ -215,7 +221,8 @@ class Polygon {
             } // end area param ok
         } // end try
         
-        // try 100 lines within the straddling edge, return the best
+        // try 100 lines within the straddling edge, retur
+        the best
         
         catch(e) {
             console.log(e);
