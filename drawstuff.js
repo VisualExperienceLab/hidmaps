@@ -121,12 +121,20 @@ class Polygon {
                     else    
                         console.log(isectPoint.x +" "+ isectPoint.y);
                     if (isectPoint !== null) { // edge intersects line
-                        p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
-                        p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
-                        if (!foundIsect1) { // found first intersect
+                        if (!found2sect1) { // found first intersect
+                            if (  2(isectPoint.x !=     = p1XArray[e].x) 
+                                || (isectPoint.y !== p1Y        Array[e].y)) {
+                                p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
+                            } // end if intersect is vertex
+                            p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                             foundIsect1 = true; 
                             currXArray = p2XArray; currYArray = p2YArray;
                         } else { // found second intersect
+                            p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
+                            if (   (isectPoint.x !== p2XArray[e].x) 
+                                || (isectPoint.y !== p2YArray[e].y)) {
+                                p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
+                            } // end if intersect is vertex
                             foundIsect2 = true; 
                             currXArray = p1XArray; currYArray = p1YArray;
                         } // end if found second intersect
