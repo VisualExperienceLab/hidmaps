@@ -194,7 +194,7 @@ class Polygon {
                 throw "split poly by area: target area not in (0,1)";
             else {
                 var beginV, endV; // edge vertex indices
-                var dist, maxDist = Number.MIN_VALUE;
+                var dist, maxDist = Number.NEGATIVE_INFINITY;
                 
                 // find the vertex farthest from the line
                 for (var v=0; v<this.xArray.length; v++) {
