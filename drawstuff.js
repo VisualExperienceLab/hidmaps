@@ -143,7 +143,9 @@ class Polygon {
                     vBegin = e; 
                 } // end for edges
                 console.log(p1XArray.toString());
+                console.log(p1YArray.toString());
                 console.log(p2XArray.toString());
+                console.log(p2YArray.toString());
                 
                 if (p2XArray.length == 0) { // no split
                     console.log("There was no split");
