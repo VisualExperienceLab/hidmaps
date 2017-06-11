@@ -121,7 +121,7 @@ class Polygon {
                     else    
                         console.log(isectPoint.x +" "+ isectPoint.y);
                     if (isectPoint !== null) { // edge intersects line
-                        if (!found2sect1) { // found first intersect
+                        if (!foundIsect1) { // found first intersect
                             if (  2(isectPoint.x !== p1XArray[e].x) 
                                 || (isectPoint.y !== p1YArray[e].y)) {
                                 p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
