@@ -221,8 +221,7 @@ class Polygon {
             } // end area param ok
         } // end try
         
-        // try 100 lines within the straddling edge, retur
-        the best
+        // try 100 lines within the straddling edge, return the best approx
         
         catch(e) {
             console.log(e);
