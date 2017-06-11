@@ -158,7 +158,6 @@ class Polygon {
         // approx normalized area a, the other approx area 1-a.
     splitByArea(a,m) {
         var beginAreaLess, endAreaLess; // if split through edge vertices < a
-        var beginV, endV = 0; // edge vertex indices
         var al, bl, cl; // split line coefficients
         
         // compare area of split produced through a certain vertex to a
@@ -194,7 +193,12 @@ class Polygon {
             if ((a <= 0) || (a >= 1))
                 throw "split poly by area: target area not in (0,1)";
             else {
-        
+                var beginV, endV = Number.MIN_VALUE; // edge vertex indices
+                
+                // find the vertex farthest from the line
+                for (var v=0; v<this.xArray.length; v++)
+                    endV = Math.min(endV,this.yArray[v]-m*this.xArray[v]);
+                
                 // look for an edge that straddles the ideal area
                 endAreaLess = isSplitAreaLess(this,endV); 
                 do {
