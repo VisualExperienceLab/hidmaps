@@ -103,6 +103,7 @@ class Polygon {
                 throw "polygon split: passed line is just a point";
                 // later add convexity test
             else {
+                const CLOSE = 0.000000001; // good enough precision
                 var vBegin = this.xArray.length - 1; // begin vertex is last poly vertex
                 var p1XArray = [], p1YArray = []; // vertices of new poly 1
                 var p2XArray = [], p2YArray = []; // vertices of new poly 2
@@ -122,8 +123,8 @@ class Polygon {
                         console.log(isectPoint.x +" "+ isectPoint.y);
                     if (isectPoint !== null) { // edge intersects line
                         if (!foundIsect1) { // found first intersect
-                            if (   (isectPoint.x !== this.xArray[e].x) 
-                                || (isectPoint.y !== this.yArray[e].y)) {
+                            if (   (Math.abs(isectPoint.x - this.xArray[e].x) < CLOSE) 
+                                || (Math.abs(isectPoint.y - this.yArray[e].y) < CLOSE) {
                                 p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
                             } // end if intersect is vertex
                             p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
@@ -131,8 +132,8 @@ class Polygon {
                             currXArray = p2XArray; currYArray = p2YArray;
                         } else { // found second intersect
                             p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
-                            if (   (isectPoint.x !== this.xArray[e].x) 
-                                || (isectPoint.y !== this.yArray[e].y)) {
+                            if (   (Math.abs(isectPoint.x - this.xArray[e].x) < CLOSE) 
+                                || (Math.abs(isectPoint.y - this.yArray[e].y) < CLOSE) {
                                 p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                             } // end if intersect is vertex
                             foundIsect2 = true; 
