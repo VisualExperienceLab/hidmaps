@@ -131,8 +131,8 @@ class Polygon {
                             currXArray = p2XArray; currYArray = p2YArray;
                         } else { // found second intersect
                             p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
-                            if (   (isectPoint[e].x !== this.xArray[e].x) 
-                                || (isectPoint[e].y !== this.yArray[e].y)) {
+                            if (   (isectPoint.x !== this.xArray[e].x) 
+                                || (isectPoint.y !== this.yArray[e].y)) {
                                 p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                             } // end if intersect is vertex
                             foundIsect2 = true; 
