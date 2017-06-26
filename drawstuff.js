@@ -483,7 +483,7 @@ function main() {
     var poly = new Polygon(xArray,yArray); */ 
     
     // define a triangle polygon
-    var xArray = {-150,0,150}, yArray = {-150,150,-150};
+    var poly = new Polygon({-150,0,150},{-150,150,-150}); 
     
     // draw the polygon
     // poly.draw(context,w/2,h/2,1,-1);
