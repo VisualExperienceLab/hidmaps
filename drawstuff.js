@@ -472,7 +472,7 @@ function main() {
     var w = context.canvas.width; // as set in html
     var h = context.canvas.height;  // as set in html
  
-    // Define a circle polygon with n sides
+    /* // Define a circle polygon with n sides
     var n = 12; 
     var r = 150; 
     var incr = 2* Math.PI / n;
@@ -480,7 +480,10 @@ function main() {
     for (var a=0; a<2*Math.PI; a+=incr) {
         xArray.push(r*Math.cos(a)); yArray.push(r*Math.sin(a));
     } // end for sides
-    var poly = new Polygon(xArray,yArray); 
+    var poly = new Polygon(xArray,yArray); */ 
+    
+    // define a triangle polygon
+    var xArray = {-150,0,150}, yArray = {-150,150,-150};
     
     // draw the polygon
     // poly.draw(context,w/2,h/2,1,-1);
