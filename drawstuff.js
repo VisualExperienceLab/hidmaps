@@ -486,8 +486,8 @@ function main() {
     var poly = new Polygon(new Array(-150,0,150),new Array(-150,150,-150)); 
     
     // draw the polygon
-    // poly.draw(context,w/2,h/2,1,-1);
-    //console.log(poly.area());
+    poly.draw(context,w/2,h/2,1,-1);
+    // console.log(poly.area());
     
     // split the polygon
     var splitResult = poly.splitByArea(0.5,-1);
