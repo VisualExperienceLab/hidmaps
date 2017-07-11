@@ -141,6 +141,10 @@ class Polygon {
                         } // end if found second intersect
                     } // end if edge intersects line
                     vBegin = e; 
+                    console.log(p1XArray.toString());
+                    console.log(p1YArray.toString());
+                    console.log(p2XArray.toString());
+                    console.log(p2YArray.toString());
                 } // end for edges
                 console.log(p1XArray.toString());
                 console.log(p1YArray.toString());
