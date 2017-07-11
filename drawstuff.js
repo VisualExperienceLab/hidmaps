@@ -124,8 +124,8 @@ class Polygon {
                     if (isectPoint !== null) { // edge intersects line
                         if (!foundIsect1) { // found first intersect
                             console.log("Found isect1");
-                            if (   (Math.abs(isectPoint.x - this.xArray[e].x) > CLOSE) 
-                                || (Math.abs(isectPoint.y - this.yArray[e].y) > CLOSE)) {
+                            if (   (Math.abs(isectPoint.x - this.xArray[vBegin].x) > CLOSE) 
+                                || (Math.abs(isectPoint.y - this.yArray[vBegin].y) > CLOSE)) {
                                 p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
                             } // end if intersect is vertex
                             p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
@@ -134,8 +134,8 @@ class Polygon {
                         } else { // found second intersect
                             console.log("Found isect2");
                             p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
-                            if (   (Math.abs(isectPoint.x - this.xArray[e].x) > CLOSE) 
-                                || (Math.abs(isectPoint.y - this.yArray[e].y) > CLOSE)) {
+                            if (   (Math.abs(isectPoint.x - this.xArray[vBegin].x) > CLOSE) 
+                                || (Math.abs(isectPoint.y - this.yArray[vBegin].y) > CLOSE)) {
                                 p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                             } // end if intersect is vertex
                             foundIsect2 = true; 
