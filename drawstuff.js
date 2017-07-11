@@ -207,17 +207,17 @@ class Polygon {
                 var beginV, endV; // edge vertex indices
                 var dist, maxDist = Number.NEGATIVE_INFINITY;
                 
-                // find the vertex farthest from the line
-                for (var v=0; v<this.xArray.length; v++) {
+                // find the vertex farthest from the line that goes through origin
+                /* for (var v=0; v<this.xArray.length; v++) {
                     dist = this.yArray[v] - m*this.xArray[v];
                     if (dist > maxDist) {
                         maxDist = dist;
                         endV = v;
                     } // end if new max
-                } // end for each vertex                        
+                } // end for each vertex */                      
                 
                 // look for an edge that straddles the ideal area
-                endAreaLess = isSplitAreaLess(this,endV); 
+                endAreaLess = isSplitAreaLess(this,0); 
                 do {
                     beginV = endV;
                     beginAreaLess = endAreaLess; 
