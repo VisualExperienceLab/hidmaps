@@ -123,6 +123,7 @@ class Polygon {
                         console.log("found intersection at: "+ isectPoint.x +" "+ isectPoint.y);
                     if (isectPoint !== null) { // edge intersects line
                         if (!foundIsect1) { // found first intersect
+                            console.log("Found isect1");
                             if (   (Math.abs(isectPoint.x - this.xArray[e].x) > CLOSE) 
                                 || (Math.abs(isectPoint.y - this.yArray[e].y) > CLOSE)) {
                                 p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
@@ -131,6 +132,7 @@ class Polygon {
                             foundIsect1 = true; 
                             currXArray = p2XArray; currYArray = p2YArray;
                         } else { // found second intersect
+                            console.log("Found isect2");
                             p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
                             if (   (Math.abs(isectPoint.x - this.xArray[e].x) > CLOSE) 
                                 || (Math.abs(isectPoint.y - this.yArray[e].y) > CLOSE)) {
