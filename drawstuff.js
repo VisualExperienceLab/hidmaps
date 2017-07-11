@@ -134,8 +134,8 @@ class Polygon {
                         } else { // found second intersect
                             console.log("Found isect2");
                             p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
-                            console.log(Math.abs(isectPoint.x - this.xArray[vBegin].x));
-                            console.log(Math.abs(isectPoint.y - this.yArray[vBegin].y));
+                            console.log(isectPoint.x +" "+ this.xArray[vBegin].x);
+                            console.log(isectPoint.y +" "+ this.yArray[vBegin].y);
                             if (   (Math.abs(isectPoint.x - this.xArray[vBegin].x) > CLOSE) 
                                 || (Math.abs(isectPoint.y - this.yArray[vBegin].y) > CLOSE)) {
                                 p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
