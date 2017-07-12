@@ -182,7 +182,7 @@ class Polygon {
         var al, bl, cl; // split line coefficients
         
         // compare area of split produced through a certain vertex to a
-        function isSplitAreaLess(poly,vertex) {
+        function isSplitAreaLess(poly,vertex) { // CHANGE TO USE X Y RATHER THAN VERTEX
             const polyArea = poly.area(); // the area of the poly to split
 
             console.log("Split at: " +poly.xArray[vertex]+","+poly.yArray[vertex]);
@@ -237,12 +237,16 @@ class Polygon {
 
                 if (beginAreaLess == endAreaLess)
                     return([]);
-                else
+                else {
+                    
+                    // find the pixel accurate position within the edge for area split
+                    // STEP IN X OR Y DEPENDING ON DIFFERENCE ACROSS EDGE
+                    var beginX
+                    
                     return(this.split(al,bl,cl));
+                } // found straddling edge
             } // end area param ok
         } // end try
-        
-        // try 100 lines within the straddling edge, return the best approx
         
         catch(e) {
             console.log(e);
