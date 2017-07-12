@@ -182,6 +182,8 @@ class Polygon {
         var al, bl, cl; // split line coefficients
         
         // compare area of split produced through a certain vertex to a
+        // note that this function has a side effect on al bl cl that defines
+        // split line equation
         function isSplitAreaLess(poly,x,y) { 
             const polyArea = poly.area(); // the area of the poly to split
 
@@ -215,16 +217,6 @@ class Polygon {
                 throw "split poly by area: target area not in (0,1)";
             else {
                 var beginV, endV = 0; // edge vertex indices
-                var dist, maxDist = Number.NEGATIVE_INFINITY;
-                
-                // find the vertex farthest from the line that goes through origin
-                /* for (var v=0; v<this.xArray.length; v++) {
-                    dist = this.yArray[v] - m*this.xArray[v];
-                    if (dist > maxDist) {
-                        maxDist = dist;
-                        endV = v;
-                    } // end if new max
-                } // end for each vertex */                      
                 
                 // look for an edge that straddles the ideal area
                 endAreaLess = isSplitAreaLess(this,this.xArray[0],this.yArray[0]); 
@@ -236,32 +228,55 @@ class Polygon {
                 } while ((beginAreaLess == endAreaLess) && (endV < (this.xArray.length-1)));
 
                 if (beginAreaLess == endAreaLess)
-                    return([]);
+                    throw "unable to split poly by passed area";
                 else { // found straddling edge
                     
                     // refine the intersect location to pixel accuracy within the straddling edge
-                    var stepArray; // dimension we should use for stepping (e.g. step in x and y = f(x))
+                    var stepInY; // if we are stepping in Y
+                    var stepArray; // dimension we should use for stepping (e.g. step in x)
+                    var depArray; // dim that depends on stepping dim (e.g. y = f(x))
                     var depDelta; // straddling edge slope and dependent dim increment
                     if (this.xArray[endV] = this.xArray[beginV]) { // straddling edge vertical
-                        stepArray = this.yArray; 
+                        stepInY = true; 
+                        stepArray = this.yArray;
+                        depArray = this.xArray;
                         depDelta = 0; 
                     } else { // edge not vertical
                         var edgeSlope =    Math.abs(this.yArray[endV]-this.yArray[beginV]) 
                                          / Math.abs(this.xArray[endV]-this.xArray[beginV]);
                         var edgeIntercept = this.yArray[endV] - edgeSlope * this.xArray[endV];
-                        if (Math.abs() > 1) { 
+                        stepInY = Math.abs(edgeSlope) > 1; 
+                        if (stepInY) { // step in y
                             stepArray = this.yArray;
+                            depArray = this.xArray;
                             depDelta = 1 / edgeSlope;
-                        } else { 
+                        } else { // step in x
                             stepArray = this.xArray;
+                            depArray = this.yArray;
                             depDelta = edgeSlope; 
-                        } 
+                        } // end if step in x
                     } // end if edge not vertical
                     
-                    var stepCoord, depCoord; // stepping and dependent coordinates
-                    step
+                    var stepDir = Math.sign(stepArray[beginV] - stepArray[endV]); // direction along step axis
+                    var stepCoord = stepArray[endV]; // starting stepping coord
+                    var depCoord = depArray[endV]; // starting dependent coord
+                    var foundSplitPixel; // if we have found the split pixel
+                    var exitedEdge; // if we stepped outside the edge without finding split
+                    if (stepInY)
+                        var stepAreaLess = function { return isSplitAreaLess(depCoord,stepCoord) };
+                    else
+                        var stepAreaLess = function { return isSplitAreaLess(stepCoord,depCoord) }; 
+                    
+                    do { 
+                        stepCoord += stepDir; depCoord += (stepDir * depDelta);
+                        foundSplitPixel = (stepAreaLess() !== endAreaLess);
+                        exitedEdge = (stepDir !== Math.sign(stepArray[beginV] - stepCoord));
+                    } while (!foundSplitPixel && !exitedEdge);
+                    
+                    if (!foundSplitPixel) // when split not found, split at begin vertex
+                        isSplitAreaLess(this,this.xArray[beginV],this.yArray[beginV]);
                     return(this.split(al,bl,cl));
-                } // found straddling edge
+                } // end found straddling edge
             } // end area param ok
         } // end try
         
@@ -522,10 +537,6 @@ function main() {
     
     // split the polygon
     var splitResult = poly.splitByArea(0.5,-1);
-    if (splitResult.length == 0)
-        console.log("No split.");
-    else {
-        splitResult[0].draw(context,w/2,h/2,1,-1);
-        splitResult[1].draw(context,w/2,h/2,1,-1);
-    }
+    splitResult[0].draw(context,w/2,h/2,1,-1);
+    splitResult[1].draw(context,w/2,h/2,1,-1);
 } // end main
