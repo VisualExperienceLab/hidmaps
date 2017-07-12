@@ -258,7 +258,9 @@ class Polygon {
                             depArray = this.yArray;
                             depDelta = edgeSlope; 
                         } // end if step in x
+                        console.log("edgeSlope is: " + edgeSlope);
                     } // end if edge not vertical
+                    console.log("depDelta is: " + depDelta);
                     
                     var stepDir = Math.sign(stepArray[beginV] - stepArray[endV]); // direction along step axis
                     var stepCoord = stepArray[endV]; // starting stepping coord
