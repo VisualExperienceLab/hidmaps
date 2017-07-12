@@ -207,6 +207,7 @@ class Polygon {
             else // the polygon is split
                 area = area[0].area() / polyArea;
 
+            console.log("split area is: " + area);
             // console.log(area + (area<a ? " less than " : " greater than ") + a);
             
             return(area < a); 
