@@ -182,18 +182,18 @@ class Polygon {
         var al, bl, cl; // split line coefficients
         
         // compare area of split produced through a certain vertex to a
-        function isSplitAreaLess(poly,vertex) { // CHANGE TO USE X Y RATHER THAN VERTEX
+        function isSplitAreaLess(poly,x,y) { 
             const polyArea = poly.area(); // the area of the poly to split
 
-            console.log("Split at: " +poly.xArray[vertex]+","+poly.yArray[vertex]);
+            console.log("Split at: " +x+ "," +y);
             console.log("Poly area: " + polyArea);
             
             // set split line coefficients
             if (!isFinite(m)) { // infinite
-                al = 1; bl = 0; cl = -poly.xArray[vertex]; 
+                al = 1; bl = 0; cl = -x; 
             } else { // finite
                 al = -m; bl = 1; 
-                cl = -(poly.yArray[vertex] - m*poly.xArray[vertex]);
+                cl = -(y - m*x);
             } // end if finite
             
             console.log("  Use line: " +al+" "+bl+" "+cl); 
@@ -227,12 +227,12 @@ class Polygon {
                 } // end for each vertex */                      
                 
                 // look for an edge that straddles the ideal area
-                endAreaLess = isSplitAreaLess(this,0); 
+                endAreaLess = isSplitAreaLess(this,this.xArray[0],this.yArray[0]); 
                 do {
                     beginV = endV;
                     beginAreaLess = endAreaLess; 
                     endV++; 
-                    endAreaLess = isSplitAreaLess(this,endV);
+                    endAreaLess = isSplitAreaLess(this,this.xArray[endV],this.yArray[endV]);
                 } while ((beginAreaLess == endAreaLess) && (endV < (this.xArray.length-1)));
 
                 if (beginAreaLess == endAreaLess)
@@ -241,7 +241,6 @@ class Polygon {
                     
                     // find the pixel accurate position within the edge for area split
                     // STEP IN X OR Y DEPENDING ON DIFFERENCE ACROSS EDGE
-                    var beginX
                     
                     return(this.split(al,bl,cl));
                 } // found straddling edge
