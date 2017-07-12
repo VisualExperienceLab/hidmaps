@@ -238,6 +238,7 @@ class Polygon {
                     var depArray; // dim that depends on stepping dim (e.g. y = f(x))
                     var depDelta; // straddling edge slope and dependent dim increment
                     if (this.xArray[endV] = this.xArray[beginV]) { // straddling edge vertical
+                        console.log("straddle edge is vertical");
                         stepInY = true; 
                         stepArray = this.yArray;
                         depArray = this.xArray;
@@ -245,13 +246,14 @@ class Polygon {
                     } else { // edge not vertical
                         var edgeSlope =    Math.abs(this.yArray[endV]-this.yArray[beginV]) 
                                          / Math.abs(this.xArray[endV]-this.xArray[beginV]);
-                        var edgeIntercept = this.yArray[endV] - edgeSlope * this.xArray[endV];
                         stepInY = Math.abs(edgeSlope) > 1; 
                         if (stepInY) { // step in y
+                            console.log("straddle edge is y stepped");
                             stepArray = this.yArray;
                             depArray = this.xArray;
                             depDelta = 1 / edgeSlope;
                         } else { // step in x
+                            console.log("straddle edge is x stepped);
                             stepArray = this.xArray;
                             depArray = this.yArray;
                             depDelta = edgeSlope; 
@@ -270,6 +272,7 @@ class Polygon {
                     
                     do { 
                         stepCoord += stepDir; depCoord += (stepDir * depDelta);
+                        console.log("
                         console.log("Testing in edge split at: "+(stepInY?depCoord:stepCoord)+" "+(stepInY?stepCoord:depCoord));
                         foundSplitPixel = (stepAreaLess(this) !== endAreaLess);
                         exitedEdge = (stepDir !== Math.sign(stepArray[beginV] - stepCoord));
