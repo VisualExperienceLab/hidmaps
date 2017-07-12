@@ -230,7 +230,7 @@ class Polygon {
                 if (beginAreaLess == endAreaLess)
                     throw "unable to split poly by passed area";
                 else { // found straddling edge
-                    /*
+                   
                     // refine the intersect location to pixel accuracy within the straddling edge
                     var stepInY; // if we are stepping in Y
                     var stepArray; // dimension we should use for stepping (e.g. step in x)
@@ -269,12 +269,13 @@ class Polygon {
                     
                     do { 
                         stepCoord += stepDir; depCoord += (stepDir * depDelta);
+                        log.console("Testing in edge split at: "+(stepInY?depCoord:stepCoord)+" "+(stepInY?stepCoord:depCoord));
                         foundSplitPixel = (stepAreaLess(this) !== endAreaLess);
                         exitedEdge = (stepDir !== Math.sign(stepArray[beginV] - stepCoord));
                     } while (!foundSplitPixel && !exitedEdge);
                     
                     if (!foundSplitPixel) // when split not found, split at begin vertex
-                        isSplitAreaLess(this,this.xArray[beginV],this.yArray[beginV]); */
+                        isSplitAreaLess(this,this.xArray[beginV],this.yArray[beginV]);
                     return(this.split(al,bl,cl));
                 } // end found straddling edge
             } // end area param ok
