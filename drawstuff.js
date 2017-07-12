@@ -246,8 +246,8 @@ class Polygon {
                         depArray = this.xArray;
                         depDelta = 0; 
                     } else { // edge not vertical
-                        var edgeSlope =    Math.abs(this.yArray[endV]-this.yArray[beginV]) 
-                                         / Math.abs(this.xArray[endV]-this.xArray[beginV]);
+                        var edgeSlope =    (this.yArray[endV]-this.yArray[beginV]) 
+                                         / (this.xArray[endV]-this.xArray[beginV]);
                         stepInY = Math.abs(edgeSlope) > 1; 
                         if (stepInY) { // step in y
                             console.log("straddle edge is y stepped");
