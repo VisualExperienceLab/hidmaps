@@ -263,9 +263,9 @@ class Polygon {
                     var foundSplitPixel; // if we have found the split pixel
                     var exitedEdge; // if we stepped outside the edge without finding split
                     if (stepInY)
-                        var stepAreaLess = function() { return isSplitAreaLess(depCoord,stepCoord); };
+                        var stepAreaLess = function() { return isSplitAreaLess(this,depCoord,stepCoord); };
                     else
-                        var stepAreaLess = function() { return isSplitAreaLess(stepCoord,depCoord); }; 
+                        var stepAreaLess = function() { return isSplitAreaLess(this,stepCoord,depCoord); }; 
                     
                     do { 
                         stepCoord += stepDir; depCoord += (stepDir * depDelta);
