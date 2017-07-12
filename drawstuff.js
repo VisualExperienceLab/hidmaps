@@ -232,7 +232,7 @@ class Polygon {
                     throw "unable to split poly by passed area";
                 else { // found straddling edge
                     console.log("working with edge from (" +this.xArray[endV]+" "+this.yArray[endV]+
-                                ") to ("+this.xArray[beginV]+" "+this.yArray[endV]);
+                                ") to ("+this.xArray[beginV]+" "+this.yArray[beginV]+")");
                    
                     // refine the intersect location to pixel accuracy within the straddling edge
                     var stepInY; // if we are stepping in Y
