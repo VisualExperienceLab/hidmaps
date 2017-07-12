@@ -117,10 +117,10 @@ class Polygon {
                     currXArray.push(this.xArray[vBegin]);
                     currYArray.push(this.yArray[vBegin]); 
                     isectPoint = findIntersect(this,vBegin,e);
-                    if (isectPoint == null)
-                        // console.log("no intersection");
+                    /* if (isectPoint == null)
+                        console.log("no intersection");
                     else    
-                        // console.log("found intersection at: "+ isectPoint.x +" "+ isectPoint.y);
+                        console.log("found intersection at: "+ isectPoint.x +" "+ isectPoint.y); */ 
                     if (isectPoint !== null) { // edge intersects line
                         if (!foundIsect1) { // found first intersect
                             // console.log("Found isect1");
