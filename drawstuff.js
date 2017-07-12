@@ -532,11 +532,11 @@ function main() {
     var poly = new Polygon(new Array(-100,50,200),new Array(-150,150,-150)); 
     
     // draw the polygon
-    poly.draw(context,w/2,h/2,1,-1);
+    // poly.draw(context,w/2,h/2,1,-1);
     // console.log(poly.area());
     
     // split the polygon
-    // var splitResult = poly.splitByArea(0.5,-1);
-    // splitResult[0].draw(context,w/2,h/2,1,-1);
-    // splitResult[1].draw(context,w/2,h/2,1,-1);
+    var splitResult = poly.splitByArea(0.5,-1);
+    splitResult[0].draw(context,w/2,h/2,1,-1);
+    splitResult[1].draw(context,w/2,h/2,1,-1);
 } // end main
