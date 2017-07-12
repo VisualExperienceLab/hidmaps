@@ -263,13 +263,13 @@ class Polygon {
                     var foundSplitPixel; // if we have found the split pixel
                     var exitedEdge; // if we stepped outside the edge without finding split
                     if (stepInY)
-                        var stepAreaLess = function() { return isSplitAreaLess(this, depCoord, stepCoord); };
+                        var stepAreaLess = function(poly) { return isSplitAreaLess(poly, depCoord, stepCoord); };
                     else
-                        var stepAreaLess = function() { return isSplitAreaLess(this, stepCoord, depCoord); }; 
+                        var stepAreaLess = function(poly) { return isSplitAreaLess(poly, stepCoord, depCoord); }; 
                     
                     do { 
                         stepCoord += stepDir; depCoord += (stepDir * depDelta);
-                        foundSplitPixel = (stepAreaLess() !== endAreaLess);
+                        foundSplitPixel = (stepAreaLess(this) !== endAreaLess);
                         exitedEdge = (stepDir !== Math.sign(stepArray[beginV] - stepCoord));
                     } while (!foundSplitPixel && !exitedEdge);
                     
