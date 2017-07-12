@@ -237,11 +237,29 @@ class Polygon {
 
                 if (beginAreaLess == endAreaLess)
                     return([]);
-                else {
+                else { // found straddling edge
                     
-                    // find the pixel accurate position within the edge for area split
-                    // STEP IN X OR Y DEPENDING ON DIFFERENCE ACROSS EDGE
+                    // refine the intersect location to pixel accuracy within the straddling edge
+                    var stepArray; // dimension we should use for stepping (e.g. step in x and y = f(x))
+                    var depDelta; // straddling edge slope and dependent dim increment
+                    if (this.xArray[endV] = this.xArray[beginV]) { // straddling edge vertical
+                        stepArray = this.yArray; 
+                        depDelta = 0; 
+                    } else { // edge not vertical
+                        var edgeSlope =    Math.abs(this.yArray[endV]-this.yArray[beginV]) 
+                                         / Math.abs(this.xArray[endV]-this.xArray[beginV]);
+                        var edgeIntercept = this.yArray[endV] - edgeSlope * this.xArray[endV];
+                        if (Math.abs() > 1) { 
+                            stepArray = this.yArray;
+                            depDelta = 1 / edgeSlope;
+                        } else { 
+                            stepArray = this.xArray;
+                            depDelta = edgeSlope; 
+                        } 
+                    } // end if edge not vertical
                     
+                    var stepCoord, depCoord; // stepping and dependent coordinates
+                    step
                     return(this.split(al,bl,cl));
                 } // found straddling edge
             } // end area param ok
