@@ -124,8 +124,8 @@ class Polygon {
                     if (isectPoint !== null) { // edge intersects line
                         if (!foundIsect1) { // found first intersect
                             console.log("Found isect1");
-                            if (   (Math.abs(isectPoint.x - this.xArray[vBegin].x) > CLOSE) 
-                                || (Math.abs(isectPoint.y - this.yArray[vBegin].y) > CLOSE)) {
+                            if (   (Math.abs(isectPoint.x - this.xArray[vBegin]) > CLOSE) 
+                                || (Math.abs(isectPoint.y - this.yArray[vBegin]) > CLOSE)) {
                                 p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
                             } // end if intersect is vertex
                             p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
@@ -136,10 +136,10 @@ class Polygon {
                             p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
                             console.log(this.xArray.toString());
                             console.log(this.yArray.toString());
-                            console.log(isectPoint.x +" "+ this.xArray[vBegin].x);
-                            console.log(isectPoint.y +" "+ this.yArray[vBegin].y);
-                            if (   (Math.abs(isectPoint.x - this.xArray[vBegin].x) > CLOSE) 
-                                || (Math.abs(isectPoint.y - this.yArray[vBegin].y) > CLOSE)) {
+                            console.log(isectPoint.x +" "+ this.xArray[vBegin]);
+                            console.log(isectPoint.y +" "+ this.yArray[vBegin]);
+                            if (   (Math.abs(isectPoint.x - this.xArray[vBegin]) > CLOSE) 
+                                || (Math.abs(isectPoint.y - this.yArray[vBegin]) > CLOSE)) {
                                 p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                             } // end if intersect is vertex
                             foundIsect2 = true; 
