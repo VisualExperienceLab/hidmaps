@@ -237,7 +237,7 @@ class Polygon {
                     var stepArray; // dimension we should use for stepping (e.g. step in x)
                     var depArray; // dim that depends on stepping dim (e.g. y = f(x))
                     var depDelta; // straddling edge slope and dependent dim increment
-                    if (this.xArray[endV] = this.xArray[beginV]) { // straddling edge vertical
+                    if (this.xArray[endV] == this.xArray[beginV]) { // straddling edge vertical
                         console.log("straddle edge is vertical");
                         stepInY = true; 
                         stepArray = this.yArray;
