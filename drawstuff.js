@@ -253,7 +253,7 @@ class Polygon {
                             depArray = this.xArray;
                             depDelta = 1 / edgeSlope;
                         } else { // step in x
-                            console.log("straddle edge is x stepped);
+                            console.log("straddle edge is x stepped");
                             stepArray = this.xArray;
                             depArray = this.yArray;
                             depDelta = edgeSlope; 
