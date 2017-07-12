@@ -153,9 +153,9 @@ class Polygon {
                     // console.log(p2YArray.toString());
                 } // end for edges
                 console.log("split poly1 x: " + p1XArray.toString());
-                // console.log(p1YArray.toString());
+                console.log("split poly1 y: " + p1YArray.toString());
                 console.log("split poly2 x: " + p2XArray.toString());
-                // console.log(p2YArray.toString());
+                console.log("split poly2 y: " + p2YArray.toString());
                 
                 if (p2XArray.length == 0) { // no split
                     // console.log("There was no split");
