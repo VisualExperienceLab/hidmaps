@@ -48,38 +48,38 @@ class Polygon {
             var lineVertical = (b == 0); 
             
             if (lineVertical) {
-                console.log("line vertical");
+                // console.log("line vertical");
                 if (edgeVertical) { // line & edge vertical
-                    console.log("edge vertical");
+                    // console.log("edge vertical");
                     return(null); // no intersection is possible
                 } else { // just line vertical 
-                    console.log("edge not vertical");
+                    // console.log("edge not vertical");
                     var lineX = -c/a; 
                     var interp = (lineX - xBegin) / (xEnd - xBegin);
-                    console.log("interp: " + interp);
+                    // console.log("interp: " + interp);
                     if ((interp < 0) || (interp >= 1))
                         return(null); // intersection outside edge
                     else {
                         var isectY = yBegin + interp*(yEnd - yBegin);
-                        console.log("isectY: " + isectY);
+                        // console.log("isectY: " + isectY);
                         return({x: lineX, y: isectY });
                     } // end if intersect outside edge
                 } // end just line vertical
             } else // line not vertical
-                console.log("line not vertical")
+                // console.log("line not vertical")
                 if (edgeVertical) { // just edge vertical
-                    console.log("edge vertical");
+                    // console.log("edge vertical");
                     var isectY = ((-a*xBegin - c)/b);
                     if ((isectY < Math.min(yBegin,yEnd)) || (isectY >= Math.max(yBegin,yEnd)))
                         return(null); // intersection outside edge
                     else
                         return({x: xBegin, y: isectY }); 
                 } else { // line & edge not vertical
-                    console.log("edge not vertical");
+                    // console.log("edge not vertical");
                     var me = (yEnd - yBegin) / (xEnd - xBegin); // edge slope
-                    console.log("me: "+me);
+                    // console.log("me: "+me);
                     var ml = -a/b; // line slope
-                    console.log("ml: "+ml);
+                    // console.log("ml: "+ml);
                     
                     if (me == ml) // lines are parallel
                         return(null); // no intersection
@@ -118,12 +118,12 @@ class Polygon {
                     currYArray.push(this.yArray[vBegin]); 
                     isectPoint = findIntersect(this,vBegin,e);
                     if (isectPoint == null)
-                        console.log("no intersection");
+                        // console.log("no intersection");
                     else    
-                        console.log("found intersection at: "+ isectPoint.x +" "+ isectPoint.y);
+                        // console.log("found intersection at: "+ isectPoint.x +" "+ isectPoint.y);
                     if (isectPoint !== null) { // edge intersects line
                         if (!foundIsect1) { // found first intersect
-                            console.log("Found isect1");
+                            // console.log("Found isect1");
                             if (   (Math.abs(isectPoint.x - this.xArray[vBegin]) > CLOSE) 
                                 || (Math.abs(isectPoint.y - this.yArray[vBegin]) > CLOSE)) {
                                 p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
@@ -132,12 +132,12 @@ class Polygon {
                             foundIsect1 = true; 
                             currXArray = p2XArray; currYArray = p2YArray;
                         } else { // found second intersect
-                            console.log("Found isect2");
+                            // console.log("Found isect2");
                             p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
-                            console.log(this.xArray.toString());
-                            console.log(this.yArray.toString());
-                            console.log(isectPoint.x +" "+ this.xArray[vBegin]);
-                            console.log(isectPoint.y +" "+ this.yArray[vBegin]);
+                            // console.log(this.xArray.toString());
+                            // console.log(this.yArray.toString());
+                            // console.log(isectPoint.x +" "+ this.xArray[vBegin]);
+                            // console.log(isectPoint.y +" "+ this.yArray[vBegin]);
                             if (   (Math.abs(isectPoint.x - this.xArray[vBegin]) > CLOSE) 
                                 || (Math.abs(isectPoint.y - this.yArray[vBegin]) > CLOSE)) {
                                 p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
@@ -147,21 +147,21 @@ class Polygon {
                         } // end if found second intersect
                     } // end if edge intersects line
                     vBegin = e; 
-                    console.log(p1XArray.toString());
-                    console.log(p1YArray.toString());
-                    console.log(p2XArray.toString());
-                    console.log(p2YArray.toString());
+                    // console.log(p1XArray.toString());
+                    // console.log(p1YArray.toString());
+                    // console.log(p2XArray.toString());
+                    // console.log(p2YArray.toString());
                 } // end for edges
-                console.log(p1XArray.toString());
-                console.log(p1YArray.toString());
-                console.log(p2XArray.toString());
-                console.log(p2YArray.toString());
+                // console.log(p1XArray.toString());
+                // console.log(p1YArray.toString());
+                // console.log(p2XArray.toString());
+                // console.log(p2YArray.toString());
                 
                 if (p2XArray.length == 0) { // no split
-                    console.log("There was no split");
+                    // console.log("There was no split");
                     return([]);
                 } else {
-                    console.log("There was a split");
+                    // console.log("There was a split");
                     return([new Polygon(p1XArray,p1YArray), new Polygon(p2XArray,p2YArray)]);
                 } // end if a split
             } // end if no exceptions
@@ -187,8 +187,8 @@ class Polygon {
         function isSplitAreaLess(poly,x,y) { 
             const polyArea = poly.area(); // the area of the poly to split
 
-            console.log("Split at: " +x+ "," +y);
-            console.log("Poly area: " + polyArea);
+            // console.log("Split at: " +x+ "," +y);
+            // console.log("Poly area: " + polyArea);
             
             // set split line coefficients
             if (!isFinite(m)) { // infinite
@@ -198,7 +198,7 @@ class Polygon {
                 cl = -(y - m*x);
             } // end if finite
             
-            console.log("  Use line: " +al+" "+bl+" "+cl); 
+            // console.log("  Use line: " +al+" "+bl+" "+cl); 
             
             // get the area at the first vertex
             var area = poly.split(al,bl,cl);
@@ -207,7 +207,7 @@ class Polygon {
             else // the polygon is split
                 area = area[0].area() / polyArea;
 
-            console.log(area + (area<a ? " less than " : " greater than ") + a);
+            // console.log(area + (area<a ? " less than " : " greater than ") + a);
             
             return(area < a); 
         } // end is split area less
