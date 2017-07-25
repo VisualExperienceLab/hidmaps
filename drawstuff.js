@@ -121,8 +121,6 @@ class Polygon {
                     // check for intersection
                     isectPoint = findIntersect(this,vBegin,e);
                     if (isectPoint !== null) { // if we found an intersection
-                        console.log("xdiff: " + Math.abs(isectPoint.x - this.xArray[e]));
-                        console.log("ydiff: " + Math.abs(isectPoint.y - this.yArray[e]));
                         p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
                         p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                         if (seekingIsect1) {
