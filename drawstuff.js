@@ -90,7 +90,7 @@ class Polygon {
                         var isectY = (ml*be - me*bl) / (ml - me); 
                         if (isectX == xEnd) // (x enough because isect is on line)
                             return({x: isectX, y: isectY}); // vertex isect only ok at edge end
-                        else if ((isectX > Math.min(xBegin,xEnd)) || (isectX < Math.max(xBegin,xEnd)))
+                        else if ((isectX > Math.min(xBegin,xEnd)) && (isectX < Math.max(xBegin,xEnd)))
                             return({x: isectX, y: isectY}); // isect inside edge
                         else 
                             return(null); // no isect (or isect at edge begin)
