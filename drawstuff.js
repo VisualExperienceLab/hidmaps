@@ -124,11 +124,11 @@ class Polygon {
                             p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
                             p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                             if (seekingIsect1) {
-                                console.log("found isect1");
+                                console.log("found isect1 at " +isectPoint.x+ "," +isectPoint.y);
                                 currXArray = p2XArray; currYArray = p2YArray;
                                 seekingIsect1 = false; // now seeking second isect
                             } else { // seeking isect 2
-                                console.log("found isect2");
+                                console.log("found isect2 at " +isectPoint.x+ "," +isectPoint.y);
                                 currXArray = p1XArray; currYArray = p1YArray;
                             } // end seeking isect 2
                         } // end if intersect not equal to vertex
