@@ -88,9 +88,12 @@ class Polygon {
                         var bl = -c/b; // line intercept
                         var isectX = (be - bl) / (ml - me);
                         var isectY = (ml*be - me*bl) / (ml - me); 
-                        if (isectX == xEnd) // (x enough because isect is on line)
-                            return({x: isectX, y: isectY}); // vertex isect only ok at edge end
-                        else if ((isectX > Math.min(xBegin,xEnd)) && (isectX < Math.max(xBegin,xEnd)))
+                        if (isectX == xEnd) { // handle vertex isect (only at end)
+                            if // vertex isect splits poly
+                                return({x: isectX, y: isectY}); 
+                            else 
+                                return(null);
+                        } else if ((isectX > Math.min(xBegin,xEnd)) && (isectX < Math.max(xBegin,xEnd)))
                             return({x: isectX, y: isectY}); // isect inside edge
                         else 
                             return(null); // no isect (or isect at edge begin)
@@ -105,7 +108,6 @@ class Polygon {
                 throw "polygon split: passed line is just a point";
                 // later add convexity test
             else {
-                const CLOSE = 0.00000001; // good enough precision
                 var vBegin = this.xArray.length - 1; // begin vertex is last poly vertex
                 var p1XArray = [], p1YArray = []; // vertices of new poly 1
                 var p2XArray = [], p2YArray = []; // vertices of new poly 2
