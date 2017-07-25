@@ -108,49 +108,31 @@ class Polygon {
                 var p1XArray = [], p1YArray = []; // vertices of new poly 1
                 var p2XArray = [], p2YArray = []; // vertices of new poly 2
                 var currXArray = p1XArray, currYArray = p1YArray; // which new poly we add to
-                var foundIsect1 = false; // if first intersection found
-                var foundIsect2 = false; // if second intersection found
+                var seekingIsect1 = true; // seeking first intersection
                 var isectPoint; // the intersection point
                     
                     // move through poly edges, test for intersections, build two new polys
                 for (var e=0; e<this.xArray.length; e++) { 
                     currXArray.push(this.xArray[vBegin]);
                     currYArray.push(this.yArray[vBegin]); 
+                    
+                    // check for intersection
                     isectPoint = findIntersect(this,vBegin,e);
-                    /* if (isectPoint == null)
-                        console.log("no intersection");
-                    else    
-                        console.log("found intersection at: "+ isectPoint.x +" "+ isectPoint.y); */ 
-                    if (isectPoint !== null) { // edge intersects line
-                        if (!foundIsect1) { // found first intersect
-                            // console.log("Found isect1");
-                            if (   (Math.abs(isectPoint.x - this.xArray[vBegin]) > CLOSE) 
-                                || (Math.abs(isectPoint.y - this.yArray[vBegin]) > CLOSE)) {
-                                p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
-                            } // end if intersect is vertex
-                            p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
-                            foundIsect1 = true; 
-                            currXArray = p2XArray; currYArray = p2YArray;
-                        } else { // found second intersect
-                            // console.log("Found isect2");
+                    if (isectPoint !== null) { // if we found an intersection
+                        if (   (Math.abs(isectPoint.x - this.xArray[e]) > CLOSE) 
+                            || (Math.abs(isectPoint.y - this.yArray[e]) > CLOSE)) {
                             p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
-                            // console.log(this.xArray.toString());
-                            // console.log(this.yArray.toString());
-                            // console.log(isectPoint.x +" "+ this.xArray[vBegin]);
-                            // console.log(isectPoint.y +" "+ this.yArray[vBegin]);
-                            if (   (Math.abs(isectPoint.x - this.xArray[vBegin]) > CLOSE) 
-                                || (Math.abs(isectPoint.y - this.yArray[vBegin]) > CLOSE)) {
-                                p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
-                            } // end if intersect is vertex
-                            foundIsect2 = true; 
-                            currXArray = p1XArray; currYArray = p1YArray;
-                        } // end if found second intersect
-                    } // end if edge intersects line
-                    vBegin = e; 
-                    // console.log(p1XArray.toString());
-                    // console.log(p1YArray.toString());
-                    // console.log(p2XArray.toString());
-                    // console.log(p2YArray.toString());
+                            p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
+                            if (seekingIsect1) {
+                                currXArray = p2XArray; currYArray = p2YArray;
+                                seekingIsect1 = false; // now seeking second isect
+                            else { // seeking isect 2
+                                currXArray = p1XArray; currYArray = p1YArray;
+                            } // end seeking isect 2
+                        } // end if intersect not equal to vertex
+                    } // end if an intersect found
+                        
+                    vBegin = e; // new begin vertex is prev end vertex
                 } // end for edges
                 console.log("split poly1 x: " + p1XArray.toString());
                 console.log("split poly1 y: " + p1YArray.toString());
