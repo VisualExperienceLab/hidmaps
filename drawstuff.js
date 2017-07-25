@@ -47,39 +47,38 @@ class Polygon {
             var edgeVertical = (xBegin == xEnd); 
             var lineVertical = (b == 0); 
             
-            if (lineVertical) {
-                // console.log("line vertical");
-                if (edgeVertical) { // line & edge vertical
-                    // console.log("edge vertical");
+            if (lineVertical) { // handle vertical split line
+                
+                // both line and edge vertical 
+                if (edgeVertical) {
                     return(null); // no intersection is possible
-                } else { // just line vertical 
-                    // console.log("edge not vertical");
+                    
+                // only line is vertical 
+                } else {
                     var lineX = -c/a; 
                     var interp = (lineX - xBegin) / (xEnd - xBegin);
-                    // console.log("interp: " + interp);
                     if ((interp < 0) || (interp >= 1))
                         return(null); // intersection outside edge
                     else {
                         var isectY = yBegin + interp*(yEnd - yBegin);
-                        // console.log("isectY: " + isectY);
                         return({x: lineX, y: isectY });
                     } // end if intersect outside edge
                 } // end just line vertical
-            } else // line not vertical
-                // console.log("line not vertical")
-                if (edgeVertical) { // just edge vertical
-                    // console.log("edge vertical");
+                
+            } else // handle not vertical split line
+                
+                // only edge is vertical 
+                if (edgeVertical) {
                     var isectY = ((-a*xBegin - c)/b);
                     if ((isectY < Math.min(yBegin,yEnd)) || (isectY >= Math.max(yBegin,yEnd)))
                         return(null); // intersection outside edge
                     else
                         return({x: xBegin, y: isectY }); 
-                } else { // line & edge not vertical
-                    // console.log("edge not vertical");
+                
+                // neither line nor edge are vertical
+                } else { 
                     var me = (yEnd - yBegin) / (xEnd - xBegin); // edge slope
-                    // console.log("me: "+me);
                     var ml = -a/b; // line slope
-                    // console.log("ml: "+ml);
                     
                     if (me == ml) // lines are parallel
                         return(null); // no intersection
@@ -88,17 +87,28 @@ class Polygon {
                         var bl = -c/b; // line intercept
                         var isectX = (be - bl) / (ml - me);
                         var isectY = (ml*be - me*bl) / (ml - me); 
-                        if (isectX == xEnd) { // handle vertex isect (only at end)
-                            if // vertex isect splits poly
-                                return({x: isectX, y: isectY}); 
-                            else 
+                        
+                        if ((isectX < Math.min(xBegin,xEnd)) || (isectX > Math.max(xBegin,xEnd)))
+                            return(null); // line intersect is outside edge: no edge intersect
+                        else if (isectX == xBegin)
+                            return(null); // intersect is at begin vertex: no edge intersect
+                        else if (isectX !== xEnd)
+                            return({x: isectX, y: isectY}); // at neither vertex: return simple isect
+                        else { // at end vertex: return isect only if splits poly
+                            var beginSide = Math.sign(a*xBegin + b*yBegin + c);
+                            var vAfterEnd = (vEnd+1) % poly.xArray.length;
+                            var vAfterSide = Math.sign(a*poly.xArray[vAfterEnd] );
+                            if (Math.sign(a*xBegin) == Math.sign())
                                 return(null);
+                            else 
+                                return({x: isectX, y: isectY}); 
                         } else if ((isectX > Math.min(xBegin,xEnd)) && (isectX < Math.max(xBegin,xEnd)))
-                            return({x: isectX, y: isectY}); // isect inside edge
                         else 
-                            return(null); // no isect (or isect at edge begin)
-                    } // end line and edge are not parallel
-                } // end line & edge not vertica
+                            return(null); // no isect (or isect at edge begin)                        
+                    } // end if line and edge are not parallel
+                    
+                } // end if neither line nor edge vertical
+            
         } // end findIntersect
         
         try {
