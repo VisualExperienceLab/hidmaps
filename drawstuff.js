@@ -126,7 +126,7 @@ class Polygon {
                             if (seekingIsect1) {
                                 currXArray = p2XArray; currYArray = p2YArray;
                                 seekingIsect1 = false; // now seeking second isect
-                            else { // seeking isect 2
+                            } else { // seeking isect 2
                                 currXArray = p1XArray; currYArray = p1YArray;
                             } // end seeking isect 2
                         } // end if intersect not equal to vertex
