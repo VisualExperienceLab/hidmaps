@@ -89,7 +89,9 @@ class Polygon {
                         var isectX = (be - bl) / (ml - me);
                         var isectY = (ml*be - me*bl) / (ml - me); 
                         if ((isectX < Math.min(xBegin,xEnd)) || (isectX > Math.max(xBegin,xEnd)))
-                            return(null); // intersection outside edge
+                            return(null); // intersection outside edge in x
+                        else if ((isectY < Math.min(yBegin,yEnd)) || (isectY > Math.max(yBegin,yEnd)))
+                            return(null); // intersection outside edge in y
                         else 
                             return({x: isectX, y: isectY});
                     } // end line and edge are not parallel
@@ -103,7 +105,7 @@ class Polygon {
                 throw "polygon split: passed line is just a point";
                 // later add convexity test
             else {
-                const CLOSE = 0.00001; // good enough precision
+                const CLOSE = 0.00000001; // good enough precision
                 var vBegin = this.xArray.length - 1; // begin vertex is last poly vertex
                 var p1XArray = [], p1YArray = []; // vertices of new poly 1
                 var p2XArray = [], p2YArray = []; // vertices of new poly 2
