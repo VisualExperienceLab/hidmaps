@@ -88,12 +88,12 @@ class Polygon {
                         var bl = -c/b; // line intercept
                         var isectX = (be - bl) / (ml - me);
                         var isectY = (ml*be - me*bl) / (ml - me); 
-                        if ((isectX < Math.min(xBegin,xEnd)) || (isectX > Math.max(xBegin,xEnd)))
-                            return(null); // intersection outside edge in x
-                        else if ((isectY < Math.min(yBegin,yEnd)) || (isectY > Math.max(yBegin,yEnd)))
-                            return(null); // intersection outside edge in y
+                        if (isectX == xEnd) // (x enough because isect is on line)
+                            return({x: isectX, y: isectY}); // vertex isect only ok at edge end
+                        else if ((isectX > Math.min(xBegin,xEnd)) || (isectX < Math.max(xBegin,xEnd)))
+                            return({x: isectX, y: isectY}); // isect inside edge
                         else 
-                            return({x: isectX, y: isectY});
+                            return(null); // no isect (or isect at edge begin)
                     } // end line and edge are not parallel
                 } // end line & edge not vertica
         } // end findIntersect
@@ -123,19 +123,16 @@ class Polygon {
                     if (isectPoint !== null) { // if we found an intersection
                         console.log("xdiff: " + Math.abs(isectPoint.x - this.xArray[e]));
                         console.log("ydiff: " + Math.abs(isectPoint.y - this.yArray[e]));
-                        if (   (Math.abs(isectPoint.x - this.xArray[e]) > CLOSE) 
-                            || (Math.abs(isectPoint.y - this.yArray[e]) > CLOSE)) {
-                            p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
-                            p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
-                            if (seekingIsect1) {
-                                console.log("found isect1 at " +isectPoint.x+ "," +isectPoint.y);
-                                currXArray = p2XArray; currYArray = p2YArray;
-                                seekingIsect1 = false; // now seeking second isect
-                            } else { // seeking isect 2
-                                console.log("found isect2 at " +isectPoint.x+ "," +isectPoint.y);
-                                currXArray = p1XArray; currYArray = p1YArray;
-                            } // end seeking isect 2
-                        } // end if intersect not equal to vertex
+                        p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
+                        p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
+                        if (seekingIsect1) {
+                           console.log("found isect1 at " +isectPoint.x+ "," +isectPoint.y);
+                           currXArray = p2XArray; currYArray = p2YArray;
+                           seekingIsect1 = false; // now seeking second isect
+                        } else { // seeking isect 2
+                           console.log("found isect2 at " +isectPoint.x+ "," +isectPoint.y);
+                           currXArray = p1XArray; currYArray = p1YArray;
+                       } // end seeking isect 2
                     } // end if an intersect found
                         
                     vBegin = e; // new begin vertex is prev end vertex
