@@ -103,7 +103,7 @@ class Polygon {
                 throw "polygon split: passed line is just a point";
                 // later add convexity test
             else {
-                const CLOSE = 0.0000001; // good enough precision
+                const CLOSE = 0.00001; // good enough precision
                 var vBegin = this.xArray.length - 1; // begin vertex is last poly vertex
                 var p1XArray = [], p1YArray = []; // vertices of new poly 1
                 var p2XArray = [], p2YArray = []; // vertices of new poly 2
