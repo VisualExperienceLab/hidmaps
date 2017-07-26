@@ -112,10 +112,6 @@ class Polygon {
                     } else { // if we did find an intersection
                         p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
                         p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
-                        if ((isectPoint.x !== this.xArray[e]) || (isectPoint.y !== this.yArray[e]))  {
-                            currXArray.push(this.xArray[e]);
-                            currYArray.push(this.yArray[e]); 
-                        } // end if intersect and end point are not same
                         if (seekingIsect1) {
                            console.log("found isect1 at " +isectPoint.x+ "," +isectPoint.y);
                            currXArray = p2XArray; currYArray = p2YArray;
@@ -123,7 +119,11 @@ class Polygon {
                         } else { // seeking isect 2
                            console.log("found isect2 at " +isectPoint.x+ "," +isectPoint.y);
                            currXArray = p1XArray; currYArray = p1YArray;
-                       } // end seeking isect 2
+                        } // end seeking isect 2
+                        if ((isectPoint.x !== this.xArray[e]) || (isectPoint.y !== this.yArray[e]))  {
+                            currXArray.push(this.xArray[e]);
+                            currYArray.push(this.yArray[e]); 
+                        } // end if intersect and end point are not same
                     } // end if an intersect found                        
                     vBegin = e; // new begin vertex is prev end vertex
                 } // end for edges
