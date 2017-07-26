@@ -42,10 +42,19 @@ class Polygon {
             // find line edge intersect
             // returns xy if intersect, null otherwise
         function findIntersect(poly,vBegin,vEnd) {
+            
             var xBegin = poly.xArray[vBegin], xEnd = poly.xArray[vEnd];
             var yBegin = poly.yArray[vBegin], yEnd = poly.yArray[vEnd];
             var edgeVertical = (xBegin == xEnd); 
             var lineVertical = (b == 0); 
+            
+                // does line through end vertex split poly
+            function lineThruEndSplits(poly) {
+                var beginSide = Math.sign(a*xBegin + b*yBegin + c);
+                var vAfterEnd = (vEnd+1) % poly.xArray.length;
+                var afterEndSide = Math.sign(a*poly.xArray[vAfterEnd] + b*poly.yArray[vAfterEnd] + c);
+                return(beginSide !== afterEndSide);
+            } // end lineThruEndSplits
             
             if (lineVertical) { // handle vertical split line
                 
@@ -57,12 +66,15 @@ class Polygon {
                 } else {
                     var lineX = -c/a; 
                     var interp = (lineX - xBegin) / (xEnd - xBegin);
-                    if ((interp < 0) || (interp >= 1))
-                        return(null); // intersection outside edge
-                    else {
+                    if ((interp <= 0) || (interp > 1)) // isect outside at begin: no intersect
+                        return(null); 
+                    else if (interp < 1) { // isect inside: return simple intersect
                         var isectY = yBegin + interp*(yEnd - yBegin);
-                        return({x: lineX, y: isectY });
-                    } // end if intersect outside edge
+                        return({x: lineX, y: isectY }); // return 
+                    } else if (!lineThruEndSplits(poly)) { // isect at end: intersect if splits poly
+                        return(null);
+                    else // does split poly
+                        return({x: xEnd, y: yEnd}); 
                 } // end just line vertical
                 
             } else // handle not vertical split line
@@ -70,10 +82,16 @@ class Polygon {
                 // only edge is vertical 
                 if (edgeVertical) {
                     var isectY = ((-a*xBegin - c)/b);
-                    if ((isectY < Math.min(yBegin,yEnd)) || (isectY >= Math.max(yBegin,yEnd)))
-                        return(null); // intersection outside edge
+                    if ((isectY < Math.min(yBegin,yEnd)) || (isectY > Math.max(yBegin,yEnd)))
+                        return(null); // intersect outside edge: no edge intersect
+                    else (isectY == yBegin) 
+                        return(null); // intersect at begin vertex: no edge intersect
+                    else (isectY !== yEnd)
+                        return({x: xBegin, y: isectY }); // at neither vertex: return simple intersect
+                    else if (!lineThruEndSplits(poly))
+                        return(null);
                     else
-                        return({x: xBegin, y: isectY }); 
+                        return({x: xEnd, y: yEnd});
                 
                 // neither line nor edge are vertical
                 } else { 
@@ -94,17 +112,11 @@ class Polygon {
                             return(null); // intersect is at begin vertex: no edge intersect
                         else if (isectX !== xEnd)
                             return({x: isectX, y: isectY}); // at neither vertex: return simple isect
-                        else { // at end vertex: return isect only if splits poly
-                            var beginSide = Math.sign(a*xBegin + b*yBegin + c);
-                            var vAfterEnd = (vEnd+1) % poly.xArray.length;
-                            var vAfterSide = Math.sign(a*poly.xArray[vAfterEnd] );
-                            if (Math.sign(a*xBegin) == Math.sign())
-                                return(null);
-                            else 
-                                return({x: isectX, y: isectY}); 
-                        } else if ((isectX > Math.min(xBegin,xEnd)) && (isectX < Math.max(xBegin,xEnd)))
-                        else 
-                            return(null); // no isect (or isect at edge begin)                        
+                        else if (!lineThruEndSplits(poly) 
+                            return(null); // at end vertex: return isect only if splits poly
+                        else // does split poly
+                            return({x: xEnd, y: yEnd}); 
+                        } // end if intersect at end vertex                       
                     } // end if line and edge are not parallel
                     
                 } // end if neither line nor edge vertical
