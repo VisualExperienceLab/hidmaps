@@ -105,12 +105,15 @@ class Polygon {
                     
                     // move through poly edges, test for intersections, build two new polys
                 for (var e=0; e<this.xArray.length; e++) { 
-                    currXArray.push(this.xArray[vBegin]);
-                    currYArray.push(this.yArray[vBegin]); 
-                    
-                    // check for intersection
                     isectPoint = findSplitIntersect(this,vBegin,e);
-                    if (isectPoint !== null) { // if we found an intersection
+                    if (isectPoint == null) { // if we didn't find an intersection
+                        currXArray.push(this.xArray[e]);
+                        currYArray.push(this.yArray[e]); 
+                    } else { // if we did find an intersection
+                        if ((isectPoint.x !== this.xArray[e]) || (isectPoint.y !== this.yArray[e]))  {
+                            currXArray.push(this.xArray[e]);
+                            currYArray.push(this.yArray[e]); 
+                        } // end if intersect and end point are not same
                         p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
                         p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                         if (seekingIsect1) {
@@ -121,8 +124,7 @@ class Polygon {
                            console.log("found isect2 at " +isectPoint.x+ "," +isectPoint.y);
                            currXArray = p1XArray; currYArray = p1YArray;
                        } // end seeking isect 2
-                    } // end if an intersect found
-                        
+                    } // end if an intersect found                        
                     vBegin = e; // new begin vertex is prev end vertex
                 } // end for edges
                 console.log("split poly1 x: " + p1XArray.toString());
