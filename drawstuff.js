@@ -110,12 +110,12 @@ class Polygon {
                         currXArray.push(this.xArray[e]);
                         currYArray.push(this.yArray[e]); 
                     } else { // if we did find an intersection
+                        p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
+                        p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                         if ((isectPoint.x !== this.xArray[e]) || (isectPoint.y !== this.yArray[e]))  {
                             currXArray.push(this.xArray[e]);
                             currYArray.push(this.yArray[e]); 
                         } // end if intersect and end point are not same
-                        p1XArray.push(isectPoint.x); p1YArray.push(isectPoint.y);
-                        p2XArray.push(isectPoint.x); p2YArray.push(isectPoint.y);
                         if (seekingIsect1) {
                            console.log("found isect1 at " +isectPoint.x+ "," +isectPoint.y);
                            currXArray = p2XArray; currYArray = p2YArray;
