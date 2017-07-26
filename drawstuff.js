@@ -37,7 +37,7 @@ class Polygon {
         // assumes polygon is convex -> exactly two polygons result from split
         // expects a, b, c in ax + by + c = 0
         // returns array, empty if line doesn't intersect, else with two new polys
-    split(a,b,c) {
+    split(a,b,c) { // FIX SO AREA ABOVE ALWAYS FIRST
         
             // find line edge intersect that splits
             // returns xy if intersect, null otherwise
@@ -152,7 +152,7 @@ class Polygon {
         // expect a slope (Infinity -> vertical) and target normalized area a in (0,1)
         // returns two part poly split by line with passed slope, one part with 
         // approx normalized area a, the other approx area 1-a.
-    splitByArea(a,m) {
+    splitByArea(a,m) { 
         var beginAreaLess, endAreaLess; // if split through edge vertices < a
         var al, bl, cl; // split line coefficients
         
