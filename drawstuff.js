@@ -77,7 +77,7 @@ class Polygon {
             else if (isectY == yBegin) 
                 return(null); // ISECT AT BEGIN: NO SPLIT
             else if (isectY !== yEnd)
-                return({x: xBegin, y: isectY }); // AT NEITHER VERTEX: SPLIT AT INTERSECT
+                return({x: isectX, y: isectY }); // AT NEITHER VERTEX: SPLIT AT INTERSECT
             else {
                 var beginSide = Math.sign(a*xBegin + b*yBegin + c);
                 var vAfterEnd = (vEnd+1) % poly.xArray.length;
