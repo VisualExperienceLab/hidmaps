@@ -74,9 +74,9 @@ class Polygon {
                     
             if ((isectY < Math.min(yBegin,yEnd)) || (isectY > Math.max(yBegin,yEnd)))
                 return(null); // ISECT OUTSIDE EDGE: NO SPLIT
-            else (isectY == yBegin) 
+            else if (isectY == yBegin) 
                 return(null); // ISECT AT BEGIN: NO SPLIT
-            else (isectY !== yEnd)
+            else if (isectY !== yEnd)
                 return({x: xBegin, y: isectY }); // AT NEITHER VERTEX: SPLIT AT INTERSECT
             else {
                 var beginSide = Math.sign(a*xBegin + b*yBegin + c);
