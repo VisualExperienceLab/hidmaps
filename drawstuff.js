@@ -99,8 +99,10 @@ class Polygon {
                 var vBegin = this.xArray.length - 1; // begin vertex is last poly vertex
                 var p1XArray = [], p1YArray = []; // vertices of new poly 1
                 var p2XArray = [], p2YArray = []; // vertices of new poly 2
+                var p1PosSide = false; // if new poly 1 is one pos line side
                 var currXArray = p1XArray, currYArray = p1YArray; // which new poly we add to
                 var seekingIsect1 = true; // seeking first intersection
+                var seekingIsect2 = false; // seeking second intersection
                 var isectPoint; // the intersection point
                     
                     // move through poly edges, test for intersections, build two new polys
@@ -115,29 +117,31 @@ class Polygon {
                         if (seekingIsect1) {
                            console.log("found isect1 at " +isectPoint.x+ "," +isectPoint.y);
                            currXArray = p2XArray; currYArray = p2YArray;
-                           seekingIsect1 = false; // now seeking second isect
+                           seekingIsect1 = false; seekingIsect2 = true; 
                         } else { // seeking isect 2
                            console.log("found isect2 at " +isectPoint.x+ "," +isectPoint.y);
                            currXArray = p1XArray; currYArray = p1YArray;
+                           seekingIsect1 = true; seekingIsect2 = false;
                         } // end seeking isect 2
                         if ((isectPoint.x !== this.xArray[e]) || (isectPoint.y !== this.yArray[e]))  {
                             currXArray.push(this.xArray[e]);
                             currYArray.push(this.yArray[e]); 
                         } // end if intersect and end point are not same
-                    } // end if an intersect found                        
+                    } // end if an intersect found        
                     vBegin = e; // new begin vertex is prev end vertex
+                    p1PosSide |= (seekingIsect1 && ((a*this.xArray[e] + b*this.yArray[e] + c) > 0)); 
                 } // end for edges
                 console.log("split poly1 x: " + p1XArray.toString());
                 console.log("split poly1 y: " + p1YArray.toString());
                 console.log("split poly2 x: " + p2XArray.toString());
                 console.log("split poly2 y: " + p2YArray.toString());
                 
-                if (p2XArray.length == 0) { // no split
-                    // console.log("There was no split");
+                if (p2XArray.length == 0) // no split
                     return([]);
-                } else {
-                    // console.log("There was a split");
+                else if (p1PosSide) 
                     return([new Polygon(p1XArray,p1YArray), new Polygon(p2XArray,p2YArray)]);
+                else 
+                    return([new Polygon(p2XArray,p2YArray), new Polygon(p1XArray,p1YArray)]);
                 } // end if a split
             } // end if no exceptions
         } // end throw
