@@ -137,6 +137,10 @@ class Polygon {
                 console.log("split poly2 x: " + p2XArray.toString());
                 console.log("split poly2 y: " + p2YArray.toString());
                 
+                if (p1XArray.length < 3)
+                    return([new Polygon(p2XArray,p2YArray)]);
+                else if (p2XArray.length < 3)
+                    return([new Polygon(p1XArray,p1YArray)]);     
                 if (p1PosSide) 
                     return([new Polygon(p1XArray,p1YArray), new Polygon(p2XArray,p2YArray)]);
                 else 
