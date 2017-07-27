@@ -142,7 +142,6 @@ class Polygon {
                     return([new Polygon(p1XArray,p1YArray), new Polygon(p2XArray,p2YArray)]);
                 else 
                     return([new Polygon(p2XArray,p2YArray), new Polygon(p1XArray,p1YArray)]);
-                } // end if a split
             } // end if no exceptions
         } // end throw
          
