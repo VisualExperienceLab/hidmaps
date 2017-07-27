@@ -137,14 +137,12 @@ class Polygon {
                 console.log("split poly2 x: " + p2XArray.toString());
                 console.log("split poly2 y: " + p2YArray.toString());
                 
-                if (p1XArray.length < 3)
-                    return([new Polygon(p2XArray,p2YArray)]);
-                else if (p2XArray.length < 3)
-                    return([new Polygon(p1XArray,p1YArray)]);     
+                var p1Poly = new Polygon(p1XArray,p1YArray);
+                var p2Poly = (p2XArray.length < 3) ? null : new Polygon(p2XArray,p2YArray); 
                 if (p1PosSide) 
-                    return([new Polygon(p1XArray,p1YArray), new Polygon(p2XArray,p2YArray)]);
-                else 
-                    return([new Polygon(p2XArray,p2YArray), new Polygon(p1XArray,p1YArray)]);
+                    return([p1Poly, p2Poly]);
+                else
+                    return([p2Poly, p1Poly]);
             } // end if no exceptions
         } // end throw
          
@@ -162,7 +160,7 @@ class Polygon {
         var beginAreaLess, endAreaLess; // if split through edge vertices < a
         var al, bl, cl; // split line coefficients
         
-        // compare area of split produced through a certain vertex to a
+        // compare area of positive side split poly through x,y to a
         // note that this function has a side effect on al bl cl that defines
         // split line equation
         function isSplitAreaLess(poly,x,y) { 
@@ -181,9 +179,9 @@ class Polygon {
             
             // console.log("  Use line: " +al+" "+bl+" "+cl); 
             
-            // get the area at the first vertex
+            // get the area of split poly on positive side
             var area = poly.split(al,bl,cl);
-            area = area[0].area() / polyArea;
+            area = (area[0] == null) ? 0 : area[0].area() / polyArea;
 
             console.log("split area is: " + area);
             // console.log(area + (area<a ? " less than " : " greater than ") + a);
