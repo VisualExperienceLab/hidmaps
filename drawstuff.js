@@ -137,9 +137,7 @@ class Polygon {
                 console.log("split poly2 x: " + p2XArray.toString());
                 console.log("split poly2 y: " + p2YArray.toString());
                 
-                if (p2XArray.length == 0) // no split
-                    return([]);
-                else if (p1PosSide) 
+                if (p1PosSide) 
                     return([new Polygon(p1XArray,p1YArray), new Polygon(p2XArray,p2YArray)]);
                 else 
                     return([new Polygon(p2XArray,p2YArray), new Polygon(p1XArray,p1YArray)]);
@@ -181,10 +179,7 @@ class Polygon {
             
             // get the area at the first vertex
             var area = poly.split(al,bl,cl);
-            if (area.length == 0)
-                area = 0;
-            else // the polygon is split
-                area = area[0].area() / polyArea;
+            area = area[0].area() / polyArea;
 
             console.log("split area is: " + area);
             // console.log(area + (area<a ? " less than " : " greater than ") + a);
