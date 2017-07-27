@@ -130,6 +130,7 @@ class Polygon {
                     } // end if an intersect found        
                     vBegin = e; // new begin vertex is prev end vertex
                     p1PosSide |= (seekingIsect1 && ((a*this.xArray[e] + b*this.yArray[e] + c) > 0)); 
+                    console.log(p1PosSide ? "p1 positive" : "p1 negative");
                 } // end for edges
                 console.log("split poly1 x: " + p1XArray.toString());
                 console.log("split poly1 y: " + p1YArray.toString());
