@@ -67,8 +67,8 @@ class Polygon {
                 else { // line and edge are not parallel
                     var be = yBegin - me*xBegin; // edge intercept
                     var bl = -c/b; // line intercept
-                    var isectX = (be - bl) / (ml - me);
-                    var isectY = (ml*be - me*bl) / (ml - me); 
+                    isectX = (be - bl) / (ml - me);
+                    isectY = (ml*be - me*bl) / (ml - me); 
                 } // end if line and edge not parallel
             } // end if line and edge not vertical
                     
