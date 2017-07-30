@@ -82,7 +82,7 @@ class Polygon {
                 var beginSide = Math.sign(a*xBegin + b*yBegin + c);
                 var vAfterEnd = (vEnd+1) % poly.xArray.length;
                 var afterEndSide = Math.sign(a*poly.xArray[vAfterEnd] + b*poly.yArray[vAfterEnd] + c);
-                console.log("beginSide: " +beginSide+ ", vAfter: " +vAfterEnde+ ", afterSide: " +afterEndSide);
+                console.log("beginSide: " +beginSide+ ", vAfter: " +vAfterEnd+ ", afterSide: " +afterEndSide);
                 if (beginSide == afterEndSide)
                     return(null); // ISECT AT END, NO SPLIT: NO SPLIT
                 else
