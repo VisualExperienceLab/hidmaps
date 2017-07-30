@@ -166,7 +166,7 @@ class Polygon {
         function isSplitAreaLess(poly,x,y) { 
             const polyArea = poly.area(); // the area of the poly to split
 
-            // console.log("Split at: " +x+ "," +y);
+            console.log("Trying to split at: " +x+ "," +y);
             // console.log("Poly area: " + polyArea);
             
             // set split line coefficients
