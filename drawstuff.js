@@ -170,6 +170,7 @@ class Polygon {
         var al, bl, cl; // split line coefficients
         
         // compare area of positive side split poly through x,y to a
+        // return -1 if less, 0 if equal, 1 if more
         // note that this function has a side effect on al bl cl that defines
         // split line equation
         function isSplitAreaLess(poly,x,y) { 
@@ -195,7 +196,7 @@ class Polygon {
             console.log("split area is: " + area);
             // console.log(area + (area<a ? " less than " : " greater than ") + a);
             
-            return(area < a); 
+            return(Math.sign(area-a)); 
         } // end is split area less
         
         try {
