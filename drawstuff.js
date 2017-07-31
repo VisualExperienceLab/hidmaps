@@ -333,15 +333,15 @@ class Polygon {
                 context.scale(rx,ry); 
                 
                 // draw polygon
+                context.fillStyle = 'black';
+                context.strokeStyle = 'gray'; 
                 context.beginPath();
                 context.moveTo(this.xArray[0],this.yArray[0]);
                 for (var p=1; p<this.xArray.length; p++) {
                     context.lineTo(this.xArray[p],this.yArray[p]);
                 } // end for points
-                context.fillStyle = 'black';
                 context.fill();
                 context.lineWidth = 3;
-                context.strokeStyle = 'gray'; 
                 context.stroke();
                 context.restore();
             } // end if
