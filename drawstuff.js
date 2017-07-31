@@ -330,9 +330,9 @@ class Polygon {
                 for (var p=1; p<this.xArray.length; p++) {
                     context.lineTo(this.xArray[p],this.yArray[p]);
                 } // end for points
-                context.fillStyle() = 'black';
+                context.fillStyle = 'black';
                 context.fill();
-                context.strokeStyle() = 'white'; 
+                context.strokeStyle = 'white'; 
                 context.stroke();
                 context.restore();
             } // end if
