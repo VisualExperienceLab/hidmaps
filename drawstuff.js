@@ -536,7 +536,7 @@ function main() {
     // console.log(poly.area());
     
     // split the polygon
-    var splitResult = poly.splitByArea(0.5,1);
+    var splitResult = poly.splitByArea(0.5,0.5);
     splitResult[0].draw(context,w/2,h/2,1,-1);
     splitResult[1].draw(context,w/2,h/2,1,-1);
 } // end main
