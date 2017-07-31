@@ -88,9 +88,9 @@ class Polygon {
             } else {
                 var outsideEdge; // if intersect is outside edge
                 if (yBegin == yEnd) // edge is horizontal: use x compare
-                    outsideEdge = ((isectX < Math.min(xBegin,xEnd)) || (isectX > Math.max(xBegin,xEnd));
+                    outsideEdge = ((isectX < Math.min(xBegin,xEnd)) || (isectX > Math.max(xBegin,xEnd)));
                 else // not horizontal: use y compare
-                    outsideEdge = ((isectY < Math.min(yBegin,yEnd)) || (isectY > Math.max(yBegin,yEnd));  
+                    outsideEdge = ((isectY < Math.min(yBegin,yEnd)) || (isectY > Math.max(yBegin,yEnd)));  
                 if (outsideEdge)                   
                     return(null); // OUTSIDE HORIZ EDGE: NO SPLIT
                 else 
