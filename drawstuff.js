@@ -332,7 +332,7 @@ class Polygon {
                 } // end for points
                 context.fillStyle = 'black';
                 context.fill();
-                context.strokeStyle = 'white'; 
+                context.strokeStyle = 'gray'; 
                 context.stroke();
                 context.restore();
             } // end if
