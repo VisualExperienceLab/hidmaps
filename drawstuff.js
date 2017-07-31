@@ -332,6 +332,7 @@ class Polygon {
                 } // end for points
                 context.fillStyle = 'black';
                 context.fill();
+                context.lineWidth = 3;
                 context.strokeStyle = 'gray'; 
                 context.stroke();
                 context.restore();
