@@ -73,23 +73,29 @@ class Polygon {
                     isectY = (ml*be - me*bl) / (ml - me); 
                 } // end if line and edge not parallel
             } // end if line and edge not vertical
-                    
-            if ((isectY < Math.min(yBegin,yEnd)) || (isectY > Math.max(yBegin,yEnd)))
-                return(null); // ISECT OUTSIDE EDGE: NO SPLIT
-            else if ((isectY == yBegin) && (isectX == xBegin))
+            
+            if ((isectY == yBegin) && (isectX == xBegin))
                 return(null); // ISECT AT BEGIN: NO SPLIT
-            else if ((isectY !== yEnd) && (isectX !== xEnd))
-                return({x: isectX, y: isectY }); // AT NEITHER VERTEX: SPLIT AT INTERSECT
-            else {
+            else if ((isectY == yEnd) && (isectX == xEnd)) {
                 var beginSide = Math.sign(a*xBegin + b*yBegin + c);
                 var vAfterEnd = (vEnd+1) % poly.xArray.length;
                 var afterEndSide = Math.sign(a*poly.xArray[vAfterEnd] + b*poly.yArray[vAfterEnd] + c);
                 console.log("beginSide: " +beginSide+ ", vAfter: " +vAfterEnd+ ", afterSide: " +afterEndSide);
                 if ((beginSide == 0) || (afterEndSide == 0) || (beginSide == afterEndSide))
-                    return(null); // ISECT AT END, NO SPLIT: NO SPLIT
+                    return(null); // ISECT AT END, DOESN'T CROSS: NO SPLIT
                 else
-                    return({x: xEnd, y: yEnd}); // ISECT AT END, SPLIT: SPLIT AT END 
-            } // end if isect at end
+                    return({x: xEnd, y: yEnd}); // ISECT AT END, CROSSES: SPLIT AT END 
+            } else {
+                var outsideEdge; // if intersect is outside edge
+                if (yBegin == yEnd) // edge is horizontal: use x compare
+                    outsideEdge = ((isectX < Math.min(xBegin,xEnd)) || (isectX > Math.max(xBegin,xEnd));
+                else // not horizontal: use y compare
+                    outsideEdge = ((isectY < Math.min(yBegin,yEnd)) || (isectY > Math.max(yBegin,yEnd))     
+                if (outsideEdge)                   
+                    return(null); // OUTSIDE HORIZ EDGE: NO SPLIT
+                else 
+                    return({x: isectX, y: isectY});
+            } // end if intersect not at edge vertex
         } // end findSplitIntersect
         
         try {
