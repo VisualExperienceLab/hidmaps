@@ -48,6 +48,8 @@ class Polygon {
             var lineVertical = (b == 0); 
             var isectX, isectY; // intersection's x & y coords
             
+            console.log("Testing edge (" +xBegin+","+yBegin+ ") to (" +xEnd+" "+yEnd+ ")");
+            
             if (lineVertical) 
                 if (edgeVertical) // line and edge vertical
                     return(null); // PARALLEL: NO SPLIT
