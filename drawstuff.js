@@ -524,7 +524,8 @@ function main() {
     var incr = 2* Math.PI / n;
     var xArray = [], yArray = []; 
     for (var a=0; a<2*Math.PI; a+=incr) {
-        xArray.push(r*Math.cos(a).toPrecision(10)); yArray.push(r*Math.sin(a).toPrecision(10));
+        xArray.push((r*Math.cos(a)).toPrecision(10)); 
+        yArray.push((r*Math.sin(a)).toPrecision(10));
     } // end for sides
     var poly = new Polygon(xArray,yArray);
     console.log("test poly x: " + poly.xArray.toString());
