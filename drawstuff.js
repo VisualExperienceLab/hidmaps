@@ -196,7 +196,7 @@ class Polygon {
             console.log("split area is: " + area);
             // console.log(area + (area<a ? " less than " : " greater than ") + a);
             
-            return(Math.sign(area-a)); 
+            return(area < a); 
         } // end is split area less
         
         try {
