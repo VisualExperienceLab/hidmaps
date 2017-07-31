@@ -539,7 +539,7 @@ function main() {
     // var poly = new Polygon(new Array(-150,-150, 150, 150),new Array(-150, 150, 150, -150)); 
     
     // draw the polygon
-    // poly.draw(context,w/2,h/2,1,-1);
+    poly.draw(context,w/2,h/2,1,-1);
     // console.log(poly.area());
     
     console.log("test poly x: " + poly.xArray.toString());
