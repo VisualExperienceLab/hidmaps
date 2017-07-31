@@ -254,21 +254,24 @@ class Polygon {
                     var depCoord = depArray[endV]; // starting dependent coord
                     var foundSplitPixel; // if we have found the split pixel
                     var exitedEdge; // if we stepped outside the edge without finding split
+                    var oldAl, oldBl, oldCl; // the last good refined split line
                     if (stepInY)
                         var stepAreaLess = function(poly) { return isSplitAreaLess(poly, depCoord, stepCoord); };
                     else
                         var stepAreaLess = function(poly) { return isSplitAreaLess(poly, stepCoord, depCoord); }; 
                     
                     do { 
+                        oldAl = al; oldBl = bl; oldCl = cl; 
                         stepCoord += stepDir; depCoord += (stepDir * depDelta);
                         console.log("Testing in edge split at: "+(stepInY?depCoord:stepCoord)+" "+(stepInY?stepCoord:depCoord));
                         foundSplitPixel = (stepAreaLess(this) !== endAreaLess);
                         exitedEdge = (stepDir !== Math.sign(stepArray[beginV] - stepCoord));
                     } while (!foundSplitPixel && !exitedEdge);
                     
-                    if (!foundSplitPixel) // when split not found, split at begin vertex
-                        isSplitAreaLess(this,this.xArray[beginV],this.yArray[beginV]);
-                    return(this.split(al,bl,cl));
+                    if (!foundSplitPixel) // when split not found, throw exception
+                        throw "refined split not found within straddling edge";
+                    else
+                        return(this.split(oldAl,oldBl,oldCl));
                 } // end found straddling edge
             } // end area param ok
         } // end try
