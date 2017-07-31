@@ -337,10 +337,13 @@ class Polygon {
                 context.strokeStyle = 'gray'; 
                 context.lineWidth = 3;
                 context.beginPath();
-                context.moveTo(this.xArray[0],this.yArray[0]);
+                
+                var lastVert = this.xArray.length-1; 
+                context.moveTo(this.xArray[lastVert],this.yArray[lastVert]);
                 for (var p=0; p<this.xArray.length; p++) {
                     context.lineTo(this.xArray[p],this.yArray[p]);
                 } // end for points
+                
                 context.fill();
                 context.stroke();
                 context.restore();
