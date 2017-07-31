@@ -527,6 +527,8 @@ function main() {
         xArray.push(r*Math.cos(a)); yArray.push(r*Math.sin(a));
     } // end for sides
     var poly = new Polygon(xArray,yArray);
+    console.log("test poly x: " + poly.xArray.toString());
+    console.log("test poly y: " + poly.yArray.toString()); 
     
     // define a triangle polygon
     // var poly = new Polygon(new Array(-100,50,200),new Array(-150,150,-150)); 
