@@ -335,13 +335,13 @@ class Polygon {
                 // draw polygon
                 context.fillStyle = 'black';
                 context.strokeStyle = 'gray'; 
+                context.lineWidth = 3;
                 context.beginPath();
                 context.moveTo(this.xArray[0],this.yArray[0]);
-                for (var p=1; p<this.xArray.length; p++) {
+                for (var p=0; p<this.xArray.length; p++) {
                     context.lineTo(this.xArray[p],this.yArray[p]);
                 } // end for points
                 context.fill();
-                context.lineWidth = 3;
                 context.stroke();
                 context.restore();
             } // end if
