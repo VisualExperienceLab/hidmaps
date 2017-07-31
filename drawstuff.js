@@ -331,6 +331,7 @@ class Polygon {
                     context.lineTo(this.xArray[p],this.yArray[p]);
                 } // end for points
                 context.fill();
+                context.stroke();
                 context.restore();
             } // end if
         } // end try
