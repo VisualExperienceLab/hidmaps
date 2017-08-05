@@ -72,7 +72,7 @@ class Polygon {
             } else { // line and edge not vertical
                 var me = (yEnd - yBegin) / (xEnd - xBegin); // edge slope
                 var ml = -a/b; // line slope
-                if (me == ml) // lines are parallel
+                if (nearlyEqual(me,ml)) // lines are parallel
                     return(null); // PARALLEL: NO SPLIT
                 else { // line and edge are not parallel
                     var be = yBegin - me*xBegin; // edge intercept
