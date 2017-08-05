@@ -48,6 +48,14 @@ class Polygon {
             var lineVertical = (b == 0); 
             var isectX = NaN, isectY = NaN; // intersection's x & y coords
             
+                // test for equality but allow some imprecision
+                // equal if within a small constant value
+            function nearlyEqual(x,y) {
+                const EPSILON = 0.0000000001;
+                
+                return(Math.abs(x-y) < EPSILON);
+            } // end nearlyEqual
+            
             console.log("Testing edge (" +xBegin+","+yBegin+ ") to (" +xEnd+" "+yEnd+ ")");
             
             if (lineVertical) 
@@ -76,9 +84,9 @@ class Polygon {
             
             console.log("isect point: (" +isectX+","+isectY+ ")");
             
-            if ((isectY == yBegin) && (isectX == xBegin))
+            if (nearlyEqual(isectY,yBegin) && nearlyEqual(isectX,xBegin))
                 return(null); // ISECT AT BEGIN: NO SPLIT
-            else if ((isectY == yEnd) && (isectX == xEnd)) {
+            else if (nearlyEqual(isectY,yEnd) && nearlyEqual(isectX,xEnd)) {
                 var beginSide = Math.sign(a*xBegin + b*yBegin + c);
                 var vAfterEnd = (vEnd+1) % poly.xArray.length;
                 var afterEndSide = Math.sign(a*poly.xArray[vAfterEnd] + b*poly.yArray[vAfterEnd] + c);
