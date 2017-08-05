@@ -556,7 +556,7 @@ function main() {
     console.log("test poly y: " + poly.yArray.toString()); 
 
     // split the polygon
-    var splitResult = poly.splitByArea(0.5,2);
+    var splitResult = poly.splitByArea(0.5,-2);
     splitResult[0].draw(context,w/2,h/2,1,-1);
     splitResult[1].draw(context,w/2,h/2,1,-1);
 } // end main
