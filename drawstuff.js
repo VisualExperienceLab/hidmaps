@@ -532,13 +532,15 @@ function main() {
     var h = context.canvas.height;  // as set in html
  
     // Define a circle polygon with n sides
-    var n = 6; 
-    var r = 150; 
-    var incr = 2* Math.PI / n;
+    const SIDES = 6; 
+    const RADIUS = 150; 
+    var angle = 0; 
+    var aIncr = 2*Math.PI / SIDES;
     var xArray = [], yArray = []; 
-    for (var a=0; a<2*Math.PI; a+=incr) {
-        xArray.push(Math.round(r*Math.cos(a))); 
-        yArray.push(Math.round(r*Math.sin(a)));
+    for (var s=0; s<SIDES; s++) {
+        xArray.push(Math.round(RADIUS*Math.cos(angle))); 
+        yArray.push(Math.round(RADIUS*Math.sin(angle)));
+        angle += aIncr;
     } // end for sides
     var poly = new Polygon(xArray,yArray);
     
