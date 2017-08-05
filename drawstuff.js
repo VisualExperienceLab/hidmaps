@@ -532,7 +532,7 @@ function main() {
     var h = context.canvas.height;  // as set in html
  
     // Define a circle polygon with n sides
-    var n = 5; 
+    var n = 6; 
     var r = 150; 
     var incr = 2* Math.PI / n;
     var xArray = [], yArray = []; 
@@ -556,7 +556,7 @@ function main() {
     console.log("test poly y: " + poly.yArray.toString()); 
 
     // split the polygon
-    var splitResult = poly.splitByArea(0.5,-Math.tan(54 * Math.PI/180));
+    var splitResult = poly.splitByArea(0.5,0/*-Math.tan(54 * Math.PI/180)*/);
     splitResult[0].draw(context,w/2,h/2,1,-1);
     splitResult[1].draw(context,w/2,h/2,1,-1);
 } // end main
