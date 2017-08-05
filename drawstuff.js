@@ -532,7 +532,7 @@ function main() {
     var h = context.canvas.height;  // as set in html
  
     // Define a circle polygon with n sides
-    var n = 5; 
+    /* var n = 5; 
     var r = 150; 
     var incr = 2* Math.PI / n;
     var xArray = [], yArray = []; 
@@ -540,10 +540,10 @@ function main() {
         xArray.push(Math.round(r*Math.cos(a))); 
         yArray.push(Math.round(r*Math.sin(a)));
     } // end for sides
-    var poly = new Polygon(xArray,yArray);
+    var poly = new Polygon(xArray,yArray); */
     
     // define a triangle polygon
-    // var poly = new Polygon(new Array(-100,50,200),new Array(-150,150,-150)); 
+    var poly = new Polygon(new Array(-100,50,200),new Array(-150,150,-150)); 
     
     // define an axis aligned square
     // var poly = new Polygon(new Array(-150,-150, 150, 150),new Array(-150, 150, 150, -150)); 
