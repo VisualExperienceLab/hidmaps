@@ -185,9 +185,6 @@ class Polygon {
         function isSplitAreaLess(poly,x,y) { 
             const polyArea = poly.area(); // the area of the poly to split
 
-            console.log("Trying to split at: " +x+ "," +y);
-            // console.log("Poly area: " + polyArea);
-            
             // set split line coefficients
             if (!isFinite(m)) { // infinite
                 al = 1; bl = 0; cl = -x; 
@@ -215,11 +212,13 @@ class Polygon {
                 var beginV, endV = 0; // edge vertex indices
                 
                 // look for an edge that straddles the ideal area
+                console.log('\n'+"Trying to split at: " +this.xArray[0]+ "," +this.yArray[0]);
                 endAreaLess = isSplitAreaLess(this,this.xArray[0],this.yArray[0]); 
                 do {
                     beginV = endV;
                     beginAreaLess = endAreaLess; 
                     endV++; 
+                    console.log('\n'+"Trying to split at: " +this.xArray[endV]+ "," +this.yArray[endV]);
                     endAreaLess = isSplitAreaLess(this,this.xArray[endV],this.yArray[endV]);
                 } while ((beginAreaLess == endAreaLess) && (endV < (this.xArray.length-1)));
 
@@ -273,8 +272,8 @@ class Polygon {
                     do { 
                         oldAl = al; oldBl = bl; oldCl = cl; 
                         stepCoord += stepDir; depCoord += (stepDir * depDelta);
-                        console.log("");
-                        console.log("Testing in edge split at: "+(stepInY?depCoord:stepCoord)+" "+(stepInY?stepCoord:depCoord));
+                        console.log("Refining area split at location: "
+                                    +(stepInY?depCoord:stepCoord)+" "+(stepInY?stepCoord:depCoord));
                         foundSplitPixel = (stepAreaLess(this) !== endAreaLess);
                         exitedEdge = (stepDir !== Math.sign(stepArray[beginV] - stepCoord));
                     } while (!foundSplitPixel && !exitedEdge);
