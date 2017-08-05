@@ -46,7 +46,7 @@ class Polygon {
             var yBegin = poly.yArray[vBegin], yEnd = poly.yArray[vEnd];
             var edgeVertical = (xBegin == xEnd); 
             var lineVertical = (b == 0); 
-            var isectX, isectY; // intersection's x & y coords
+            var isectX = NaN, isectY = NaN; // intersection's x & y coords
             
             console.log("Testing edge (" +xBegin+","+yBegin+ ") to (" +xEnd+" "+yEnd+ ")");
             
@@ -73,6 +73,8 @@ class Polygon {
                     isectY = (ml*be - me*bl) / (ml - me); 
                 } // end if line and edge not parallel
             } // end if line and edge not vertical
+            
+            console.log("isect point: (" +isectX+","+isectY+ ")");
             
             if ((isectY == yBegin) && (isectX == xBegin))
                 return(null); // ISECT AT BEGIN: NO SPLIT
@@ -170,7 +172,6 @@ class Polygon {
         var al, bl, cl; // split line coefficients
         
         // compare area of positive side split poly through x,y to a
-        // return -1 if less, 0 if equal, 1 if more
         // note that this function has a side effect on al bl cl that defines
         // split line equation
         function isSplitAreaLess(poly,x,y) { 
