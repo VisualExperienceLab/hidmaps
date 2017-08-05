@@ -273,6 +273,7 @@ class Polygon {
                     do { 
                         oldAl = al; oldBl = bl; oldCl = cl; 
                         stepCoord += stepDir; depCoord += (stepDir * depDelta);
+                        console.log("");
                         console.log("Testing in edge split at: "+(stepInY?depCoord:stepCoord)+" "+(stepInY?stepCoord:depCoord));
                         foundSplitPixel = (stepAreaLess(this) !== endAreaLess);
                         exitedEdge = (stepDir !== Math.sign(stepArray[beginV] - stepCoord));
