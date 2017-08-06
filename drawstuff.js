@@ -564,7 +564,7 @@ function main() {
     // var splitResult = poly.splitByArea(0.5,-Math.tan(60 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,Math.tan(60 * Math.PI/180));
     var splitResult = poly.splitByArea(0.5,-Math.tan(18 * Math.PI/180));
-    var splitResult = poly.splitByArea(0.5,0);
+    // var splitResult = poly.splitByArea(0.5,0);
     
     splitResult[0].draw(context,w/2,h/2,1,-1);
     splitResult[1].draw(context,w/2,h/2,1,-1);
