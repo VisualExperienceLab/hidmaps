@@ -534,7 +534,7 @@ function main() {
     var h = context.canvas.height;  // as set in html
  
     // Define a circle polygon with n sides
-    /* const SIDES = 5; 
+    const SIDES = 7; 
     const RADIUS = 150; 
     var angle = 0; 
     var aIncr = 2*Math.PI / SIDES;
@@ -544,13 +544,13 @@ function main() {
         yArray.push(Math.round(RADIUS*Math.sin(angle)));
         angle += aIncr;
     } // end for sides
-    var poly = new Polygon(xArray,yArray); */
+    var poly = new Polygon(xArray,yArray);
     
     // define a triangle polygon
     // var poly = new Polygon(new Array(-100,50,200),new Array(-150,150,-150)); 
     
     // define an axis aligned square
-    var poly = new Polygon(new Array(-150,-150, 150, 150),new Array(-150, 150, 150, -150)); 
+    // var poly = new Polygon(new Array(-150,-150, 150, 150),new Array(-150, 150, 150, -150)); 
     
     // draw the polygon
     poly.draw(context,w/2,h/2,1,-1);
@@ -568,8 +568,8 @@ function main() {
     // var splitResult = poly.splitByArea(0.5,-Math.tan(54 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,2);
     // var splitResult = poly.splitByArea(0.5,-2);
-    // var splitResult = poly.splitByArea(0.5,0);
-    var splitResult = poly.splitByArea(0.5,Infinity);
+    var splitResult = poly.splitByArea(0.5,0);
+    // var splitResult = poly.splitByArea(0.5,Infinity);
     
     splitResult[0].draw(context,w/2,h/2,1,-1);
     splitResult[1].draw(context,w/2,h/2,1,-1);
