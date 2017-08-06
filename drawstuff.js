@@ -566,8 +566,8 @@ function main() {
     // var splitResult = poly.splitByArea(0.5,-Math.tan(18 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,Math.tan(54 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,-Math.tan(54 * Math.PI/180));
-    // var splitResult = poly.splitByArea(0.5,Math.tan(67.5 * Math.PI/180));
-    var splitResult = poly.splitByArea(0.5,-Math.tan(67.5 * Math.PI/180));
+    /var splitResult = poly.splitByArea(0.5,Math.tan(67.5 * Math.PI/180));
+    // var splitResult = poly.splitByArea(0.5,-Math.tan(67.5 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,Math.tan(22.5 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,-Math.tan(22.5 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,2);
