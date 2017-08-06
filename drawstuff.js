@@ -534,7 +534,7 @@ function main() {
     var h = context.canvas.height;  // as set in html
  
     // Define a circle polygon with n sides
-    const SIDES = 8; 
+    const SIDES = 10; 
     const RADIUS = 150; 
     var angle = 0; 
     var aIncr = 2*Math.PI / SIDES;
@@ -566,13 +566,13 @@ function main() {
     // var splitResult = poly.splitByArea(0.5,-Math.tan(18 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,Math.tan(54 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,-Math.tan(54 * Math.PI/180));
-    var splitResult = poly.splitByArea(0.5,Math.tan(67.5 * Math.PI/180));
+    // var splitResult = poly.splitByArea(0.5,Math.tan(67.5 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,-Math.tan(67.5 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,Math.tan(22.5 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,-Math.tan(22.5 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,2);
     // var splitResult = poly.splitByArea(0.5,-2);
-    // var splitResult = poly.splitByArea(0.5,0);
+    var splitResult = poly.splitByArea(0.5,0);
     // var splitResult = poly.splitByArea(0.5,Infinity);
     
     splitResult[0].draw(context,w/2,h/2,1,-1);
