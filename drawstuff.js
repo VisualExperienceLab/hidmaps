@@ -281,7 +281,7 @@ class Polygon {
                     if (foundSplitPixel) 
                         return(this.split(oldAl,oldBl,oldCl));
                     else { // when split not found, just split at begin vertex
-                        isSplitAreaLess(this,xArray[beginV],yArray[beginV]);
+                        isSplitAreaLess(this,this.xArray[beginV],this.yArray[beginV]);
                         return(this.split(al,bl,cl));
                     } // end if no split found during refine
                 } // end found straddling edge
