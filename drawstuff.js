@@ -534,7 +534,7 @@ function main() {
     var h = context.canvas.height;  // as set in html
  
     // Define a circle polygon with n sides
-    const SIDES = 6; 
+    const SIDES = 5; 
     const RADIUS = 150; 
     var angle = 0; 
     var aIncr = 2*Math.PI / SIDES;
