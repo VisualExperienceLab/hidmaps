@@ -225,7 +225,7 @@ class Polygon {
                 if (beginAreaLess == endAreaLess)
                     throw "unable to split poly by passed area";
                 else { // found straddling edge
-                    console.log("working with edge from (" +this.xArray[endV]+","+this.yArray[endV]+
+                    console.log("\n\nworking with edge from (" +this.xArray[endV]+","+this.yArray[endV]+
                                 ") to (" +this.xArray[beginV]+","+this.yArray[beginV]+ ")");
                    
                     // refine the intersect location to pixel accuracy within the straddling edge
@@ -272,16 +272,18 @@ class Polygon {
                     do { 
                         oldAl = al; oldBl = bl; oldCl = cl; 
                         stepCoord += stepDir; depCoord += (stepDir * depDelta);
-                        console.log("Refining area split at location: "
+                        console.log("\nRefining area split at location: "
                                     +(stepInY?depCoord:stepCoord)+" "+(stepInY?stepCoord:depCoord));
                         foundSplitPixel = (stepAreaLess(this) !== endAreaLess);
                         exitedEdge = (stepDir !== Math.sign(stepArray[beginV] - stepCoord));
                     } while (!foundSplitPixel && !exitedEdge);
                     
-                    if (!foundSplitPixel) // when split not found, throw exception
-                        throw "refined split not found within straddling edge";
-                    else
+                    if (foundSplitPixel) 
                         return(this.split(oldAl,oldBl,oldCl));
+                    else { // when split not found, just split at begin vertex
+                        isSplitAreaLess(this,xArray[beginV],yArray[beginV]);
+                        return(this.split(al,bl,cl));
+                    } // end if no split found during refine
                 } // end found straddling edge
             } // end area param ok
         } // end try
