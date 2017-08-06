@@ -570,9 +570,11 @@ function main() {
     // var splitResult = poly.splitByArea(0.5,-Math.tan(67.5 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,Math.tan(22.5 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,-Math.tan(22.5 * Math.PI/180));
+    // var splitResult = poly.splitByArea(0.5,Math.tan(36 * Math.PI/180));
+    var splitResult = poly.splitByArea(0.5,-Math.tan(36 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,2);
     // var splitResult = poly.splitByArea(0.5,-2);
-    var splitResult = poly.splitByArea(0.5,0);
+    // var splitResult = poly.splitByArea(0.5,0);
     // var splitResult = poly.splitByArea(0.5,Infinity);
     
     splitResult[0].draw(context,w/2,h/2,1,-1);
