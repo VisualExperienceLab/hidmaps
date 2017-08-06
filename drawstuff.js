@@ -398,7 +398,31 @@ class PolygonTree {
         }
     } // end constructor
 
-        // Polygon
+        // PolygonTree split
+        // Divides a tree leaf proportionally by area
+        // Takes a array of areas that should sum to 1, and the slope to cut with
+    split(areas,slope) {
+        try {
+            if (this.children !== [])
+                throw "cannot split polytree node that already has children";
+            else if ()
+                throw "polygon tree split was not passed an array";
+            else if (areas.reduce(function(sum,value) {return sum+value;}, 0) !== 1)
+                throw "polygon tree split areas do not sum to one";
+            else { 
+                var remainingArea = 1;
+                var remainingPoly = null; 
+                
+                while (areas.length > 1) { // split for all but first child
+                    
+                } // end while split remains
+            } // end if no exception
+        } // end throw
+        
+        catch(e) {
+            console.log(e);
+        }
+    } // end split 
 } // end PolygonTree class
 
 
