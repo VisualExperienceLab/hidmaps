@@ -33,12 +33,20 @@ class Polygon {
         return(theClone);
     } // end close
     
+    static function nearlyEqual(x,y) {
+        const EPSILON = 0.0000000001;
+               
+        return(Math.abs(x-y) < EPSILON);
+    } // end nearlyEqual
+    
         // split the polygon into two new ones, given a line
         // assumes polygon is convex -> exactly two polygons result from split
         // expects a, b, c in ax + by + c = 0
         // returns array, empty if line doesn't intersect, else with two new polys
-    split(a,b,c) { // FIX SO AREA ABOVE ALWAYS FIRST
+    split(a,b,c) { 
         
+            // test for equality but allow some imprecision
+            // equal if within a small constant value
             // find line edge intersect that splits
             // returns xy if intersect, null otherwise
         function findSplitIntersect(poly,vBegin,vEnd) {
@@ -47,14 +55,6 @@ class Polygon {
             var edgeVertical = (xBegin == xEnd); 
             var lineVertical = (b == 0); 
             var isectX = NaN, isectY = NaN; // intersection's x & y coords
-            
-                // test for equality but allow some imprecision
-                // equal if within a small constant value
-            function nearlyEqual(x,y) {
-                const EPSILON = 0.0000000001;
-                
-                return(Math.abs(x-y) < EPSILON);
-            } // end nearlyEqual
             
             console.log("Testing edge (" +xBegin+","+yBegin+ ") to (" +xEnd+" "+yEnd+ ")");
             
@@ -72,7 +72,7 @@ class Polygon {
             } else { // line and edge not vertical
                 var me = (yEnd - yBegin) / (xEnd - xBegin); // edge slope
                 var ml = -a/b; // line slope
-                if (nearlyEqual(me,ml)) // lines are parallel
+                if (Polygon.nearlyEqual(me,ml)) // lines are parallel
                     return(null); // PARALLEL: NO SPLIT
                 else { // line and edge are not parallel
                     var be = yBegin - me*xBegin; // edge intercept
@@ -84,9 +84,9 @@ class Polygon {
             
             console.log("isect point: (" +isectX+","+isectY+ ")");
             
-            if (nearlyEqual(isectY,yBegin) && nearlyEqual(isectX,xBegin))
+            if (Polygon.nearlyEqual(isectY,yBegin) && Polygon.nearlyEqual(isectX,xBegin))
                 return(null); // ISECT AT BEGIN: NO SPLIT
-            else if (nearlyEqual(isectY,yEnd) && nearlyEqual(isectX,xEnd)) {
+            else if (Polygon.nearlyEqual(isectY,yEnd) && Polygon.nearlyEqual(isectX,xEnd)) {
                 var beginSide = Math.sign(a*xBegin + b*yBegin + c);
                 var vAfterEnd = (vEnd+1) % poly.xArray.length;
                 var afterEndSide = Math.sign(a*poly.xArray[vAfterEnd] + b*poly.yArray[vAfterEnd] + c);
@@ -269,6 +269,7 @@ class Polygon {
                     else
                         var stepAreaLess = function(poly) { return isSplitAreaLess(poly, stepCoord, depCoord); }; 
                     
+                    // loop pixel by pixel within the straddling edge
                     do { 
                         oldAl = al; oldBl = bl; oldCl = cl; 
                         stepCoord += stepDir; depCoord += (stepDir * depDelta);
@@ -278,12 +279,20 @@ class Polygon {
                         exitedEdge = (stepDir !== Math.sign(stepArray[beginV] - stepCoord));
                     } while (!foundSplitPixel && !exitedEdge);
                     
+                    // return the split pixel, or if not found, return the begin vertex as split locat
+                    var splitPolys; // the two split polys
                     if (foundSplitPixel) 
-                        return(this.split(oldAl,oldBl,oldCl));
+                        splitPolys = this.split(oldAl,oldBl,oldCl);
                     else { // when split not found, just split at begin vertex
                         isSplitAreaLess(this,this.xArray[beginV],this.yArray[beginV]);
-                        return(this.split(al,bl,cl));
+                        splitPolys = this.split(al,bl,cl);
                     } // end if no split found during refine
+                    
+                    // make sure that the first poly returned has the target size
+                    if (Polygon.nearlyEqual(a,splitPolys[0].area()))
+                        return(splitPolys);
+                    else
+                        return([splitPolys[1],splitPolys[0]);
                 } // end found straddling edge
             } // end area param ok
         } // end try
@@ -405,17 +414,28 @@ class PolygonTree {
         try {
             if (this.children !== [])
                 throw "cannot split polytree node that already has children";
-            else if ()
+            else if (!(areas instanceof Array))
                 throw "polygon tree split was not passed an array";
             else if (areas.reduce(function(sum,value) {return sum+value;}, 0) !== 1)
                 throw "polygon tree split areas do not sum to one";
             else { 
-                var remainingArea = 1;
-                var remainingPoly = null; 
+                this.cutSlope = slope; // record the cut slope for this tree node
                 
-                while (areas.length > 1) { // split for all but first child
-                    
+                var whichArea = 0; // which area we're working with
+                var remainingArea = 1; // area of remaining poly
+                var remainingPoly = this.poly; // start with this node's poly
+                var normedArea; // the current area, normalized by remaining area
+                var splitPolys = []; // the two split polygons just produced
+                
+                while (whichArea+1 < areas.length) { // split for all but last area
+                    normedArea = areas[whichArea] / remainingArea;
+                    splitPolys = remainingPoly.splitByArea(normedArea,slope); // make subpoly matching pres area
+                    this.children.push(new PolygonTree(splitPolys[0])); // make a matching child
+                    remainingPoly = splitPolys[1];
+                    remainingArea = remainingPoly.area();
                 } // end while split remains
+                // ADD POINtER TO PARENT IN CHILDREN
+                this.children.push(new PolygonTree(remainingPoly);
             } // end if no exception
         } // end throw
         
