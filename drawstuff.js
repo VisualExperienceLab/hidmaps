@@ -289,10 +289,10 @@ class Polygon {
                     } // end if no split found during refine
                     
                     // make sure that the first poly returned has the target size
-                    if (Polygon.nearlyEqual(a,splitPolys[0].area())
+                    if (Polygon.nearlyEqual(a,splitPolys[0].area()))
                         return(splitPolys);
                     else
-                        return([splitPolys[1],splitPolys[0]);
+                        return([splitPolys[1],splitPolys[0]]);
                 } // end found straddling edge
             } // end area param ok
         } // end try
