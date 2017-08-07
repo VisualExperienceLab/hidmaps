@@ -462,9 +462,11 @@ class PolygonTree {
     
         // Draw this tree by drawing its leaf polys
     draw() {
-        if (this.children == []) 
+        console.log("in draw");
+        if (this.children == []) {
             this.poly.draw();
-        else
+            console.log("drawing poly");
+        } else
             this.children.forEach(function(child) {
                 child.draw();
             });
