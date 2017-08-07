@@ -29,7 +29,7 @@ class Polygon {
     
         // return a deep copy of the polygon
     clone() {
-        theClone = new Polygon(this.xArray,this.yArray);
+        var theClone = new Polygon(this.xArray,this.yArray);
         return(theClone);
     } // end close
     
