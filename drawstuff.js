@@ -408,9 +408,9 @@ class PolygonTree {
     } // end constructor
     
         // add passed node to this node
-    addChild(node) {
+    addChild(treeNode) {
         try {
-            if (!(node instanceOf PolygonTree))
+            if (!(treeNode instanceOf PolygonTree))
                 throw "in add child, passed node is not a PolygonTree";
             else {
                 node.parent = this;
