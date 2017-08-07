@@ -406,6 +406,22 @@ class PolygonTree {
             console.log(e);
         }
     } // end constructor
+    
+        // add passed node to this node
+    addChild(node) {
+        try {
+            if (!(node instanceOf PolygonTree))
+                throw "in add child, passed node is not a PolygonTree";
+            else {
+                node.parent = this;
+                this.children.push(node);
+            } // end if passed node is PolygonTree
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+        } // end catch
+    } // end addChild
 
         // PolygonTree split
         // Divides a tree leaf proportionally by area
@@ -430,19 +446,29 @@ class PolygonTree {
                 while (whichArea+1 < areas.length) { // split for all but last area
                     normedArea = areas[whichArea] / remainingArea;
                     splitPolys = remainingPoly.splitByArea(normedArea,slope); // make subpoly matching pres area
-                    this.children.push(new PolygonTree(splitPolys[0])); // make a matching child
+                    this.addChild(new PolygonTree(splitPolys[0])); // make a matching child
                     remainingPoly = splitPolys[1];
                     remainingArea = remainingPoly.area();
                 } // end while split remains
-                // ADD POINtER TO PARENT IN CHILDREN
-                this.children.push(new PolygonTree(remainingPoly);
+
+                this.addChild(new PolygonTree(remainingPoly));
             } // end if no exception
-        } // end throw
+        } // end try
         
         catch(e) {
             console.log(e);
         }
     } // end split 
+    
+        // Draw this tree by drawing its leaf polys
+    draw() {
+        if (this.children == []) 
+            this.poly.draw();
+        else
+            this.children.forEach(function(child) {
+                child.draw();
+            });
+    } // end draw
 } // end PolygonTree class
 
 
@@ -578,7 +604,7 @@ function main() {
     var h = context.canvas.height;  // as set in html
  
     // Define a circle polygon with n sides
-    const SIDES = 10; 
+    const SIDES = 6; 
     const RADIUS = 150; 
     var angle = 0; 
     var aIncr = 2*Math.PI / SIDES;
@@ -597,11 +623,11 @@ function main() {
     // var poly = new Polygon(new Array(-150,-150, 150, 150),new Array(-150, 150, 150, -150)); 
     
     // draw the polygon
-    poly.draw(context,w/2,h/2,1,-1);
+    // poly.draw(context,w/2,h/2,1,-1);
     // console.log(poly.area());
     
-    console.log("test poly x: " + poly.xArray.toString());
-    console.log("test poly y: " + poly.yArray.toString()); 
+    // console.log("test poly x: " + poly.xArray.toString());
+    // console.log("test poly y: " + poly.yArray.toString()); 
 
     // split the polygon
     // var splitResult = poly.splitByArea(0.5,Math.tan(60 * Math.PI/180));
@@ -617,12 +643,15 @@ function main() {
     // var splitResult = poly.splitByArea(0.5,Math.tan(36 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,-Math.tan(36 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,Math.tan(72 * Math.PI/180));
-    var splitResult = poly.splitByArea(0.5,-Math.tan(72 * Math.PI/180));
+    // var splitResult = poly.splitByArea(0.5,-Math.tan(72 * Math.PI/180));
     // var splitResult = poly.splitByArea(0.5,2);
     // var splitResult = poly.splitByArea(0.5,-2);
     // var splitResult = poly.splitByArea(0.5,0);
     // var splitResult = poly.splitByArea(0.5,Infinity);
     
-    splitResult[0].draw(context,w/2,h/2,1,-1);
-    splitResult[1].draw(context,w/2,h/2,1,-1);
+    // splitResult[0].draw(context,w/2,h/2,1,-1);
+    // splitResult[1].draw(context,w/2,h/2,1,-1);
+    
+    var tree = new PolygonTree(poly);
+    tree.draw();
 } // end main
