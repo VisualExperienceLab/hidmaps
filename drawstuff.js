@@ -33,7 +33,7 @@ class Polygon {
         return(theClone);
     } // end close
     
-    static function nearlyEqual(x,y) {
+    static nearlyEqual(x,y) {
         const EPSILON = 0.0000000001;
                
         return(Math.abs(x-y) < EPSILON);
