@@ -461,14 +461,14 @@ class PolygonTree {
     } // end split 
     
         // Draw this tree by drawing its leaf polys
-    draw(context) {
+    draw(context,ox=0,oy=0,rx=1,ry=1) {
         console.log("in draw:" + this.children.toString() + ":");
         if (this.children.length == 0) {
-            this.poly.draw(context);
+            this.poly.draw(context,ox,oy,rx,ry);
             console.log("drawing poly");
         } else
             this.children.forEach(function(child) {
-                child.draw();
+                child.draw(context,ox,oy,rx,ry);
             });
     } // end draw
 } // end PolygonTree class
@@ -655,5 +655,5 @@ function main() {
     // splitResult[1].draw(context,w/2,h/2,1,-1);
     
     var tree = new PolygonTree(poly);
-    tree.draw(context);
+    tree.draw(context,w/2,h/2,1,-1);
 } // end main
