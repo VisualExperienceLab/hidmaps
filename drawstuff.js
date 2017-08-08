@@ -655,5 +655,6 @@ function main() {
     // splitResult[1].draw(context,w/2,h/2,1,-1);
     
     var tree = new PolygonTree(poly);
+    tree.split([.2,.5,.3],2);
     tree.draw(context,w/2,h/2,1,-1);
 } // end main
