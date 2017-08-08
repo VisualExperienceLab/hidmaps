@@ -428,7 +428,7 @@ class PolygonTree {
         // Takes a array of areas that should sum to 1, and the slope to cut with
     split(areas,slope) {
         try {
-            if (this.children !== [])
+            if (this.children.length > 0)
                 throw "cannot split polytree node that already has children";
             else if (!(areas instanceof Array))
                 throw "polygon tree split was not passed an array";
@@ -462,11 +462,9 @@ class PolygonTree {
     
         // Draw this tree by drawing its leaf polys
     draw(context,ox=0,oy=0,rx=1,ry=1) {
-        console.log("in draw:" + this.children.toString() + ":");
-        if (this.children.length == 0) {
+        if (this.children.length == 0)
             this.poly.draw(context,ox,oy,rx,ry);
-            console.log("drawing poly");
-        } else
+        else
             this.children.forEach(function(child) {
                 child.draw(context,ox,oy,rx,ry);
             });
