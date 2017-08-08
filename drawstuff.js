@@ -461,10 +461,10 @@ class PolygonTree {
     } // end split 
     
         // Draw this tree by drawing its leaf polys
-    draw() {
+    draw(context) {
         console.log("in draw:" + this.children.toString() + ":");
         if (this.children.length == 0) {
-            this.poly.draw();
+            this.poly.draw(context);
             console.log("drawing poly");
         } else
             this.children.forEach(function(child) {
@@ -655,5 +655,5 @@ function main() {
     // splitResult[1].draw(context,w/2,h/2,1,-1);
     
     var tree = new PolygonTree(poly);
-    tree.draw();
+    tree.draw(context);
 } // end main
