@@ -15,25 +15,23 @@ var busy = false;
 
 const EPSILON = 1e-6;
 
-var categories = ["gender", "age", "education", "nationality", "visualization expertise"];
+var categories = ["gender", "age", "education", "nationality"];
 
 var genData = [
     ["male", "female", "trans-gender"],
     ["child", "teen", "adult", "elderly"],
     ["grade-school", "high-school", "college", "university"],
-    ["usa", "canada"],
-    ["novice", "mediocre", "expert"]
+    ["usa", "canada"]
 ];
 
 var genDataP = [
     [0.48, 0.48, 0.04],
     [0.20, 0.30, 0.35, 0.15],
     [0.2, 0.4, 0.3, 0.1],
-    [0.85, 0.15],
-    [0.4, 0.4, 0.2]
+    [0.85, 0.15]
 ];
 
-var order = [0, 1, 2, 3, 4];
+var order = [0, 1, 2, 3];
 
 var total = 100;
 var datas = [];
@@ -694,6 +692,7 @@ class PolygonTree {
         }
 
         curLevel = this.level;
+        if (freq.length == 0) freq.push(1.0);
         this.split(freq, tree.cutSlopes[this.level]);
 
         for (var i = 0; i < this.children.length; ++i) this.children[i].build();
@@ -932,10 +931,21 @@ function createData() {
     }
 }
 
+function fix() {
+    if (order.length % 2 != 0) return;
+
+    categories.push("");
+
+    genData.push([]);
+
+    genDataP.push([]);
+
+    order.push(order.length);
+}
+
 function initTree() {
     // Define a circle polygon with n sides
     var SIDES = order.length; // to be input
-    if (SIDES % 2 == 0) ++SIDES;
 
     var RADIUS = 200;
 
@@ -994,6 +1004,8 @@ function main() {
 
     createData();
 
+    fix();
+
     initTree();
 
     setInterval(game_loop, 1000 / fps);
@@ -1034,6 +1046,7 @@ function findNearEdge(x, y, myPoly = tree.poly, thr = 1000) {
 function pickRGB(context, str) {
     var i, j;
     for (i = 0; i < order.length; ++i) {
+        if (categories[order[i]].length == 0) continue;
         if (str.length < categories[order[i]].length) continue;
         if (str.substring(0, categories[order[i]].length) == categories[order[i]]) break;
     }
@@ -1048,6 +1061,7 @@ function pickRGB(context, str) {
     } else {
         for (i = 0; i < order.length; ++i) {
             for (j = 0; j < genData[order[i]].length; ++j) {
+                if (genData[order[i]][j].length == 0) continue;
                 if (str.length < genData[order[i]][j].length) continue;
                 if (str.substring(0, genData[order[i]][j].length) == genData[order[i]][j]) break;
             }
@@ -1076,7 +1090,7 @@ function textPrint(context, str, maxWidth, ox, oy, rot, isNormal, RGB = "cyan") 
     context.textAlign = "left";
 
     var totLines = Math.ceil(context.measureText(str).width / maxWidth);
-    var newWidth = Math.min(Math.ceil(context.measureText(str).width / totLines) + 30, maxWidth);
+    var newWidth = Math.min(Math.ceil(context.measureText(str).width / totLines) + 1, maxWidth);
 
     var i = 0;
     var curX = -Math.min(context.measureText(str).width, newWidth) / 2;
@@ -1136,6 +1150,7 @@ function hlDraw() {
 
     var str = "";
     for (var i = 0; i < hlNode.label.length; ++i) {
+        if (categories[order[i]] == "") continue;
         str += categories[order[i]] + ": ";
         str += hlNode.label[i];
         if (i !== hlNode.label.length - 1) str += ", ";
