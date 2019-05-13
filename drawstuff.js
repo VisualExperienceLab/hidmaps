@@ -462,7 +462,7 @@ class Polygon {
                     context.scale(rx, ry);
 
                     var aH = 0.5;
-                    var aS = ((this.area() - minLeafArea) / (maxLeafArea - minLeafArea)) * .75 + .25;
+                    var aS = Math.min(((this.area() - minLeafArea) / (maxLeafArea - minLeafArea)) * .75 + .25, 1);
                     var aL = 0.5;
 
                     var aHSL_RGB = hslToRgb(aH, aS, aL);
@@ -481,7 +481,7 @@ class Polygon {
                         lastVert = p;
                     } // end for points
 
-                    context.fill();
+                    if (treeNode.children.length == 0) context.fill();
                     //context.stroke();
                     context.restore();
 
@@ -492,6 +492,14 @@ class Polygon {
                     context.clip();
 
                     context.lineWidth = 6;
+
+                    if (context !== hl_context && treeNode == hlNode) {
+                        context.lineWidth += 6;
+
+                        if (selectTree) {
+                            selectTree = selectTree;
+                        }
+                    }
 
                     var sgn = null;
 
@@ -536,7 +544,7 @@ class Polygon {
                                 }
                                 if (j < treeNode.label.length) break;
                             }
-                            eHSL[2] += (0.3 / (genData[ind].length - 1)) * i;
+                            if (i < genData[ind].length) eHSL[2] += (0.3 / (genData[ind].length - 1)) * i;
 
                             var store = context.lineWidth;
                             context.lineWidth += (4 / (genData[ind].length - 1)) * i;
@@ -567,7 +575,7 @@ class Polygon {
                             var eHSL_RGB = hslToRgb(eHSL[0], eHSL[1], eHSL[2]);
                             var eRGB = new Color(eHSL_RGB[0], eHSL_RGB[1], eHSL_RGB[2]);
 
-                            context.lineWidth = 6;
+                            context.lineWidth = 8;
                             context.strokeStyle = eRGB.toString();
 
                             context.beginPath();
@@ -586,7 +594,7 @@ class Polygon {
                             var x2 = tree.poly.xArray[(oldCandidate + 1) % tree.poly.xArray.length];
                             var y2 = tree.poly.yArray[(oldCandidate + 1) % tree.poly.xArray.length];
 
-                            context.lineWidth = 6;
+                            context.lineWidth = 8;
                             context.strokeStyle = eRGB.toString();
 
                             context.beginPath();
@@ -1171,6 +1179,7 @@ function hlDraw() {
     hl_context.save();
 
     hl_context.translate(cx * fac, cy * fac);
+    hlNode.poly.draw(context, context.canvas.width / 2, context.canvas.height / 2, -1, -1, hlNode);
     hlNode.draw(hl_context, hl_context.canvas.width / 2, hl_context.canvas.height / 2, -fac, -fac);
     hl_context.translate(-cx * fac, -cy * fac);
 
