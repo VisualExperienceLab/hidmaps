@@ -51,6 +51,87 @@ var inDraw = false;
 var maxLeafArea = 0;
 var minLeafArea = Infinity;
 
+var leaves = [];
+
+var marbles = [];
+var global_mi = 0;
+var marbleR = 3;
+
+var noMarble = false;
+
+var iD = [0, 8, 8];
+
+var lastT;
+var delT;
+
+function calcForce(idst, ox, oy, dx, dy, mm) {
+    var dst = Math.sqrt((ox - dx) * (ox - dx) + (oy - dy) * (oy - dy));
+
+    if (mm !== 0 && dst > idst) return [0, 0];
+
+    var mag = dst - idst;
+
+    var ang = Math.atan2(oy - dy, ox - dx);
+
+    return [mag * Math.cos(ang), mag * Math.sin(ang)];
+}
+
+function distributeMarbles() {
+    for (var p = 0; p < leaves.length; ++p) {
+        var poly = leaves[p];
+        marbles = marbles.slice(0, global_mi).concat(marbles.slice(global_mi).sort(
+            function(a, b) {
+                var ad = (poly.cx - a.x) * (poly.cx - a.x) + (poly.cy - a.y) * (poly.cy - a.y);
+                var bd = (poly.cx - b.x) * (poly.cx - b.x) + (poly.cy - b.y) * (poly.cy - b.y);
+                return ad - bd;
+            }
+        ));
+
+        var new_mi = global_mi + Math.round(poly.area() / tree.poly.area() * 100.0);
+        for (var i = global_mi; i < new_mi; ++i) marbles[i].poly = poly;
+        leaves[p].mi = [global_mi, new_mi];
+        global_mi = new_mi;
+    }
+}
+
+function updateMarbles() {
+    for (var i = 0; i < global_mi; ++i) {
+        marbles[i].vx = marbles[i].vy = 0;
+        for (var j = 0; j < global_mi; ++j) {
+            if (i == j) continue;
+            var v = [0, 0];
+            if (marbles[i].poly == marbles[j].poly) {
+                v = calcForce(iD[1] * marbleR, marbles[j].x, marbles[j].y, marbles[i].x, marbles[i].y, 1);
+            } else {
+                v = calcForce(iD[2] * marbleR, marbles[j].x, marbles[j].y, marbles[i].x, marbles[i].y, 2);
+            }
+            marbles[i].vx += v[0];
+            marbles[i].vy += v[1];
+        }
+    }
+
+    for (var p = 0; p < leaves.length; ++p) {
+        var poly = leaves[p];
+
+        for (var i = poly.mi[0]; i < poly.mi[1]; ++i) {
+            var v = calcForce(iD[0] * marbleR, poly.cx, poly.cy, marbles[i].x, marbles[i].y, 0);
+            marbles[i].vx += v[0];
+            marbles[i].vy += v[1];
+        }
+    }
+
+    for (var i = 0; i < global_mi; ++i) {
+        marbles[i].update();
+    }
+}
+
+function drawMarbles() {
+    if (noMarble) return;
+    for (var i = 0; i < global_mi; ++i) {
+        marbles[i].draw(context, canvas.width / 2, canvas.height / 2, -1, -1);
+    }
+}
+
 function hslToRgb(h, s, l) {
     var r, g, b;
 
@@ -78,6 +159,41 @@ function hslToRgb(h, s, l) {
 
 /* classes */
 
+// Marble class
+class Marble {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+
+        this.vx = 0;
+        this.vy = 0;
+
+        this.r = marbleR;
+        this.poly = null;
+    }
+
+    update() {
+        this.x += this.vx * delT;
+        this.y += this.vy * delT;
+    }
+
+    draw(context, ox = 0, oy = 0, rx = 1, ry = 1) {
+        context.save();
+        context.translate(ox, oy);
+        context.scale(rx, ry);
+
+        context.beginPath();
+        context.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+        context.fill();
+
+        context.restore();
+    }
+
+    isInside() {
+        return this.poly.isInside(this.x, this.y);
+    }
+}
+
 // Polygon class
 class Polygon {
 
@@ -96,6 +212,22 @@ class Polygon {
                 else {
                     this.xArray = xArray.slice();
                     this.yArray = yArray.slice();
+
+                    this.cx = 0;
+                    this.cy = 0;
+
+                    for (var i = 0; i < this.xArray.length; ++i) {
+                        this.cx += this.xArray[i];
+                        this.cy += this.yArray[i];
+                    }
+
+                    this.cx /= this.xArray.length;
+                    this.cy /= this.yArray.length;
+
+                    this.mi = null;
+
+                    this.ptx = [this.cx];
+                    this.pty = [this.cy];
                 }
             } // end try
             catch (e) {
@@ -112,6 +244,45 @@ class Polygon {
     static nearlyEqual(x, y) {
             return (Math.abs(x - y) < EPSILON);
         } // end nearlyEqual
+
+    isInside(x, y) {
+        var lastVert = this.xArray.length - 1;
+        for (var p = 0; p < this.xArray.length; p++) {
+            var x1 = this.xArray[p] - this.xArray[lastVert];
+            var y1 = this.yArray[p] - this.yArray[lastVert];
+            var x2 = x - this.xArray[lastVert];
+            var y2 = y - this.yArray[lastVert];
+            if (x1 * y2 - y1 * x2 < EPSILON) return false;
+            lastVert = p;
+        }
+        return true;
+    }
+
+    genPT() {
+        var minx = Infinity;
+        var miny = Infinity;
+        var maxx = -Infinity;
+        var maxy = -Infinity;
+
+        for (var i = 0; i < this.xArray.length; ++i) {
+            minx = Math.min(minx, this.xArray[i]);
+            miny = Math.min(miny, this.yArray[i]);
+            maxx = Math.max(maxx, this.xArray[i]);
+            maxy = Math.max(maxy, this.yArray[i]);
+        }
+
+        for (var i = Math.round(this.area() / tree.poly.area() * 100); i > 1; --i) {
+            var x, y;
+            do {
+                x = Math.random() * (maxx - minx) + minx;
+                y = Math.random() * (maxy - miny) + miny;
+
+                if (this.isInside(x, y)) break;
+            } while (true);
+            this.ptx.push(x);
+            this.pty.push(y);
+        }
+    }
 
     // split the polygon into two new ones, given a line
     // assumes polygon is convex -> exactly two polygons result from split
@@ -462,7 +633,7 @@ class Polygon {
                     context.scale(rx, ry);
 
                     var aH = 0.5;
-                    var aS = ((this.area() - minLeafArea) / (maxLeafArea - minLeafArea)) * .75 + .25;
+                    var aS = Math.min(((this.area() - minLeafArea) / (maxLeafArea - minLeafArea)) * .75 + .25, 1);
                     var aL = 0.5;
 
                     var aHSL_RGB = hslToRgb(aH, aS, aL);
@@ -481,7 +652,7 @@ class Polygon {
                         lastVert = p;
                     } // end for points
 
-                    context.fill();
+                    if (treeNode.children.length == 0) context.fill();
                     //context.stroke();
                     context.restore();
 
@@ -493,22 +664,19 @@ class Polygon {
 
                     context.lineWidth = 6;
 
-                    var sgn = null;
+                    if (context !== hl_context && treeNode == hlNode) {
+                        context.lineWidth += 6;
+
+                        if (selectTree) {
+                            selectTree = selectTree;
+                        }
+                    }
 
                     var seq = [];
                     for (var i = 0; i < order.length; ++i) seq.push([]);
 
                     var lastVert = this.xArray.length - 1;
                     for (var p = 0; p < this.xArray.length; p++) {
-                        var x1 = this.xArray[p] - this.xArray[lastVert];
-                        var y1 = this.yArray[p] - this.yArray[lastVert];
-                        var x2 = mouseStat.x - this.xArray[lastVert];
-                        var y2 = mouseStat.y - this.yArray[lastVert];
-
-                        var newSgn = Math.sign(x1 * y2 - y1 * x2);
-                        if (sgn == null) sgn = newSgn;
-                        else if (sgn !== newSgn) sgn = Infinity;
-
                         var curSlope = (this.yArray[p] - this.yArray[lastVert]) / (this.xArray[p] - this.xArray[lastVert]);
 
                         var i, j;
@@ -536,10 +704,10 @@ class Polygon {
                                 }
                                 if (j < treeNode.label.length) break;
                             }
-                            eHSL[2] += (0.3 / (genData[ind].length - 1)) * i;
+                            if (i < genData[ind].length) eHSL[2] += (0.3 / (genData[ind].length - 1)) * i;
 
                             var store = context.lineWidth;
-                            context.lineWidth += (4 / (genData[ind].length - 1)) * i;
+                            //context.lineWidth += (4 / (genData[ind].length - 1)) * i;
 
                             var eHSL_RGB = hslToRgb(eHSL[0], eHSL[1], eHSL[2]);
                             var eRGB = new Color(eHSL_RGB[0], eHSL_RGB[1], eHSL_RGB[2]);
@@ -567,7 +735,7 @@ class Polygon {
                             var eHSL_RGB = hslToRgb(eHSL[0], eHSL[1], eHSL[2]);
                             var eRGB = new Color(eHSL_RGB[0], eHSL_RGB[1], eHSL_RGB[2]);
 
-                            context.lineWidth = 6;
+                            context.lineWidth = 8;
                             context.strokeStyle = eRGB.toString();
 
                             context.beginPath();
@@ -586,7 +754,7 @@ class Polygon {
                             var x2 = tree.poly.xArray[(oldCandidate + 1) % tree.poly.xArray.length];
                             var y2 = tree.poly.yArray[(oldCandidate + 1) % tree.poly.xArray.length];
 
-                            context.lineWidth = 6;
+                            context.lineWidth = 8;
                             context.strokeStyle = eRGB.toString();
 
                             context.beginPath();
@@ -606,7 +774,7 @@ class Polygon {
                         context.restore();
                     }
 
-                    if (!inDraw && sgn !== Infinity && mouseStat.x !== null) {
+                    if (!inDraw && mouseStat.x !== null && this.isInside(mouseStat.x, mouseStat.y)) {
                         hlNode = treeNode;
 
                         if (selectTree) {
@@ -650,6 +818,8 @@ class PolygonTree {
 
                     this.cutSlopes = []; // the slopes used to cut
                     this.eHSL = [];
+
+                    this.mi = null;
                 } // end if
             } // end try
             catch (e) {
@@ -658,9 +828,11 @@ class PolygonTree {
         } // end constructor
 
     build() {
-        if (this.level == order.length) {
+        if (this.level == 1) {
             maxLeafArea = Math.max(maxLeafArea, this.poly.area());
             minLeafArea = Math.min(minLeafArea, this.poly.area());
+            this.poly.genPT();
+            leaves.push(this.poly);
             return;
         }
         if (this.tot == 0) return;
@@ -686,6 +858,7 @@ class PolygonTree {
         }
 
         curLevel = this.level;
+        if (freq.length == 0) freq.push(1.0);
         this.split(freq, tree.cutSlopes[this.level]);
 
         for (var i = 0; i < this.children.length; ++i) this.children[i].build();
@@ -693,6 +866,7 @@ class PolygonTree {
         if (this.children.length == 0) {
             maxLeafArea = Math.max(maxLeafArea, this.poly.area());
             minLeafArea = Math.min(minLeafArea, this.poly.area());
+            leaves.push(this.poly);
         }
     }
 
@@ -922,12 +1096,27 @@ function createData() {
         }
         datas.push(curr);
     }
+
+    for (var i = 0; i < 110; ++i) {
+        marbles.push(new Marble((i / 10 - 5) * marbleR * 4, (i % 10 - 5) * marbleR * 4));
+    }
+}
+
+function fix() {
+    if (order.length % 2 != 0) return;
+
+    categories.push("");
+
+    genData.push([]);
+
+    genDataP.push([]);
+
+    order.push(order.length);
 }
 
 function initTree() {
     // Define a circle polygon with n sides
     var SIDES = order.length; // to be input
-    if (SIDES % 2 == 0) ++SIDES;
 
     var RADIUS = 200;
 
@@ -961,7 +1150,10 @@ function initTree() {
         tree.eHSL[i] = [eH, eS, eL];
     }
 
+    global_mi = 0;
+    leaves = [];
     tree.build();
+    distributeMarbles();
 }
 
 function initEvents() {
@@ -986,7 +1178,11 @@ function main() {
 
     createData();
 
+    fix();
+
     initTree();
+
+    lastT = new Date().getTime();
 
     setInterval(game_loop, 1000 / fps);
 } // end main
@@ -1026,6 +1222,7 @@ function findNearEdge(x, y, myPoly = tree.poly, thr = 1000) {
 function pickRGB(context, str) {
     var i, j;
     for (i = 0; i < order.length; ++i) {
+        if (categories[order[i]].length == 0) continue;
         if (str.length < categories[order[i]].length) continue;
         if (str.substring(0, categories[order[i]].length) == categories[order[i]]) break;
     }
@@ -1040,6 +1237,7 @@ function pickRGB(context, str) {
     } else {
         for (i = 0; i < order.length; ++i) {
             for (j = 0; j < genData[order[i]].length; ++j) {
+                if (genData[order[i]][j].length == 0) continue;
                 if (str.length < genData[order[i]][j].length) continue;
                 if (str.substring(0, genData[order[i]][j].length) == genData[order[i]][j]) break;
             }
@@ -1068,7 +1266,7 @@ function textPrint(context, str, maxWidth, ox, oy, rot, isNormal, RGB = "cyan") 
     context.textAlign = "left";
 
     var totLines = Math.ceil(context.measureText(str).width / maxWidth);
-    var newWidth = Math.min(Math.ceil(context.measureText(str).width / totLines) + 30, maxWidth);
+    var newWidth = Math.min(Math.ceil(context.measureText(str).width / totLines) + 1, maxWidth);
 
     var i = 0;
     var curX = -Math.min(context.measureText(str).width, newWidth) / 2;
@@ -1128,6 +1326,7 @@ function hlDraw() {
 
     var str = "";
     for (var i = 0; i < hlNode.label.length; ++i) {
+        if (categories[order[i]] == "") continue;
         str += categories[order[i]] + ": ";
         str += hlNode.label[i];
         if (i !== hlNode.label.length - 1) str += ", ";
@@ -1147,19 +1346,15 @@ function hlDraw() {
     var maxx = -Infinity;
     var maxy = -Infinity;
 
-    var cx = 0;
-    var cy = 0;
+    var cx = myPoly.cx;
+    var cy = myPoly.cy;
+
     for (var i = 0; i < myPoly.xArray.length; ++i) {
         minx = Math.min(minx, myPoly.xArray[i]);
         miny = Math.min(miny, myPoly.yArray[i]);
         maxx = Math.max(maxx, myPoly.xArray[i]);
         maxy = Math.max(maxy, myPoly.yArray[i]);
-
-        cx += myPoly.xArray[i];
-        cy += myPoly.yArray[i];
     }
-    cx /= (1.0 * myPoly.xArray.length);
-    cy /= (1.0 * myPoly.xArray.length);
 
     var fac = Infinity;
     fac = Math.min(fac, 320 / (maxx - minx));
@@ -1171,6 +1366,7 @@ function hlDraw() {
     hl_context.save();
 
     hl_context.translate(cx * fac, cy * fac);
+    hlNode.poly.draw(context, context.canvas.width / 2, context.canvas.height / 2, -1, -1, hlNode);
     hlNode.draw(hl_context, hl_context.canvas.width / 2, hl_context.canvas.height / 2, -fac, -fac);
     hl_context.translate(-cx * fac, -cy * fac);
 
@@ -1211,6 +1407,10 @@ function plDraw() {
 }
 
 function Update() {
+    delT = new Date().getTime() - lastT;
+    lastT += delT;
+    delT = 0.01;
+
     if (mouseStat.leftClick) mouseDeal.onLeftClick();
     if (mouseStat.rightClick) mouseDeal.onRightClick();
     if (mouseStat.leftDown) mouseDeal.onLeftDown();
@@ -1221,7 +1421,9 @@ function Update() {
     if (mouseStat.move) mouseDeal.onMove();
 
     if (updateRequired) {
-        initTree();
+        noMarble = true;
+        Draw();
+        noMarble = false;
 
         img1 = new Image();
         img1.src = canvas.toDataURL();
@@ -1229,7 +1431,11 @@ function Update() {
         img2 = new Image();
         img2.src = highlight.toDataURL();
 
+        initTree();
+
+        noMarble = true;
         Draw();
+        noMarble = false;
 
         img11 = new Image();
         img11.src = canvas.toDataURL();
@@ -1244,9 +1450,12 @@ function Update() {
 
         setTimeout(function() { busy = false; }, 3000);
     }
+
+    updateMarbles();
 }
 
 function drawMouse() {
+    if (noMarble) return;
     context.save();
     context.translate(canvas.width / 2, canvas.height / 2);
     context.scale(-1, -1);
@@ -1291,9 +1500,10 @@ function Draw() {
         hlDraw();
 
         plDraw();
-
-        drawMouse();
     }
+
+    drawMouse();
+    drawMarbles();
 }
 
 function game_loop() {

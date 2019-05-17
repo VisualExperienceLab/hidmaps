@@ -51,82 +51,36 @@ var inDraw = false;
 var maxLeafArea = 0;
 var minLeafArea = Infinity;
 
-var leaves = [];
-
 var marbles = [];
 var global_mi = 0;
 var marbleR = 3;
 
-var noMarble = false;
-
-var iD = [0, 6, 8];
-
 var lastT;
 var delT;
 
-function calcForce(idst, ox, oy, dx, dy, mm) {
-    var dst = Math.sqrt((ox - dx) * (ox - dx) + (oy - dy) * (oy - dy));
+var attracF = 1;
+var repulsF = 0.0;
+var marbleF = 0.0001;
 
-    if (mm !== 0 && dst > idst) return [0, 0];
+function calcForce(F, ox, oy, m, attract, noCollide) {
+    dx = marbles[m].x;
+    dy = marbles[m].y;
+    var ins = marbles[m].isInside();
 
-    var mag = dst - idst;
+    if (ins) {
+        marbles[m].vx /= 1.01;
+        marbles[m].vy /= 1.01;
+    }
 
+    var dstsqr = (ox - dx) * (ox - dx) + (oy - dy) * (oy - dy);
+    if (noCollide && dstsqr < 4 * marbles[0].r * marbles[0].r) dstsqr = 4 * marbles[0].r * marbles[0].r;
+    var mag = F / dstsqr;
+    if (!attract) mag = -mag;
     var ang = Math.atan2(oy - dy, ox - dx);
+    var ret = [mag * Math.cos(ang), mag * Math.sin(ang)];
+    if (dstsqr < 4 * marbles[0].r * marbles[0].r) ret = [0, 0];
 
-    return [mag * Math.cos(ang), mag * Math.sin(ang)];
-}
-
-function distributeMarbles() {
-    for (var p = 0; p < leaves.length; ++p) {
-        var poly = leaves[p];
-        var new_mi = global_mi + Math.round(poly.area() / tree.poly.area() * 100.0);
-        for (var i = global_mi; i < new_mi; ++i) {
-            var ret = poly.findClosest(i);
-            marbles = marbles.slice(0, i).concat(marbles.slice(ret[0], ret[0] + 1)).concat(marbles.slice(i, ret[0])).concat(marbles.slice(ret[0] + 1));
-            marbles[i].C = ret[1];
-            marbles[i].poly = poly;
-        }
-        leaves[p].mi = [global_mi, new_mi];
-        global_mi = new_mi;
-    }
-}
-
-function updateMarbles() {
-    for (var i = 0; i < global_mi; ++i) {
-        marbles[i].vx = marbles[i].vy = 0;
-        for (var j = 0; j < global_mi; ++j) {
-            if (i == j) continue;
-            var v = [0, 0];
-            if (marbles[i].poly == marbles[j].poly) {
-                v = calcForce(iD[1] * marbleR, marbles[j].x, marbles[j].y, marbles[i].x, marbles[i].y, 1);
-            } else {
-                v = calcForce(iD[2] * marbleR, marbles[j].x, marbles[j].y, marbles[i].x, marbles[i].y, 2);
-            }
-            marbles[i].vx += v[0];
-            marbles[i].vy += v[1];
-        }
-    }
-
-    for (var p = 0; p < leaves.length; ++p) {
-        var poly = leaves[p];
-
-        for (var i = poly.mi[0]; i < poly.mi[1]; ++i) {
-            var v = calcForce(iD[0] * marbleR, poly.ptx[marbles[i].C], poly.pty[marbles[i].C], marbles[i].x, marbles[i].y, 0);
-            marbles[i].vx += v[0];
-            marbles[i].vy += v[1];
-        }
-    }
-
-    for (var i = 0; i < global_mi; ++i) {
-        marbles[i].update();
-    }
-}
-
-function drawMarbles() {
-    if (noMarble) return;
-    for (var i = 0; i < global_mi; ++i) {
-        marbles[i].draw(context, context.canvas.width / 2, context.canvas.height / 2, -1, -1);
-    }
+    return ret;
 }
 
 function hslToRgb(h, s, l) {
@@ -161,20 +115,21 @@ class Marble {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-
-        this.vx = 0;
-        this.vy = 0;
-
+        this.ax = this.ay = this.vx = this.vy = 0;
+        this.oldax = this.olday = this.oldvx = this.oldvy = 0;
         this.r = marbleR;
         this.poly = null;
-
-        this.cx = this.cy = null;
-        this.C = null;
     }
 
     update() {
-        this.x += this.vx * delT;
-        this.y += this.vy * delT;
+        this.oldvx = this.vx;
+        this.oldvy = this.vy;
+
+        this.vx += (this.oldax + this.ax) * delT / 2.0;
+        this.vy += (this.olday + this.ay) * delT / 2.0;
+
+        this.x += (this.oldvx + this.vx) * delT / 2.0;
+        this.y += (this.oldvy + this.vy) * delT / 2.0;
     }
 
     draw(context, ox = 0, oy = 0, rx = 1, ry = 1) {
@@ -225,10 +180,6 @@ class Polygon {
                     this.cy /= this.yArray.length;
 
                     this.mi = null;
-
-                    this.ptx = [this.cx];
-                    this.pty = [this.cy];
-                    this.ptc = [0];
                 }
             } // end try
             catch (e) {
@@ -257,81 +208,6 @@ class Polygon {
             lastVert = p;
         }
         return true;
-    }
-
-    genPT() {
-        var minx = Infinity;
-        var miny = Infinity;
-        var maxx = -Infinity;
-        var maxy = -Infinity;
-
-        for (var i = 0; i < this.xArray.length; ++i) {
-            minx = Math.min(minx, this.xArray[i]);
-            miny = Math.min(miny, this.yArray[i]);
-            maxx = Math.max(maxx, this.xArray[i]);
-            maxy = Math.max(maxy, this.yArray[i]);
-        }
-
-        var T = Math.ceil(Math.round(this.area() / tree.poly.area() * 100.0) / 5);
-
-        for (var c = T; c > 1; --c) {
-            var x, y;
-            var i, j;
-            var d;
-            var maxD = -Infinity;
-            var ox, oy;
-            for (var cc = 0; cc < 1000; ++cc) {
-                x = Math.random() * (maxx - minx) + minx;
-                y = Math.random() * (maxy - miny) + miny;
-
-                var minD = Infinity;
-                for (j = 0; j < this.ptx.length; ++j) {
-                    d = ((x - this.ptx[j]) * (x - this.ptx[j]) + (y - this.pty[j]) * (y - this.pty[j])) / 4;
-                    if (d < minD) minD = d;
-                }
-
-                for (i = 0, j = 1; i < this.xArray.length; ++i, j = (j + 1) % this.xArray.length) {
-                    d = edgeDstSqr(x, y, this, i, j);
-                    if (d < minD) minD = d;
-                }
-
-                minD = Math.sqrt(minD);
-
-                if (this.isInside(x, y)) {
-                    if (minD > iD[1] * marbleR) {
-                        ox = x;
-                        oy = y;
-                        break;
-                    } else if (minD > maxD) {
-                        maxD = minD;
-                        ox = x;
-                        oy = y;
-                    }
-                }
-            }
-            this.ptx.push(ox);
-            this.pty.push(oy);
-            this.ptc.push(0);
-        }
-    }
-
-    findClosest(i) {
-        var ret;
-
-        var j;
-        for (j = 0; j < this.ptc.length; ++j)
-            if (this.ptc[j] < 5) break;
-
-        var minD = Infinity;
-
-        for (; i < marbles.length; ++i) {
-            var d = (marbles[i].x - this.ptx[j]) * (marbles[i].x - this.ptx[j]) + (marbles[i].y - this.pty[j]) * (marbles[i].y - this.pty[j]);
-            if (d < minD) minD = d, ret = i;
-        }
-
-        ++this.ptc[j];
-
-        return [ret, j];
     }
 
     // split the polygon into two new ones, given a line
@@ -677,6 +553,17 @@ class Polygon {
                 /*else if (((rx !== -1) && (rx !== 1)) || ((ry !== -1) && (ry !== 1)))
                     throw "polygon reflection factor not -1 or 1";*/
                 else {
+                    if (treeNode.children.length == 0) {
+                        for (var i = 0; i < global_mi; ++i) {
+                            var A = [0, 0];
+                            if (i >= treeNode.mi[0] && i < treeNode.mi[1])
+                                A = calcForce(attracF, treeNode.poly.cx, treeNode.poly.cy, i, true, false);
+                            else A = calcForce(repulsF, treeNode.poly.cx, treeNode.poly.cy, i, false, false);
+                            marbles[i].ax += A[0];
+                            marbles[i].ay += A[1];
+                        }
+                    }
+
                     // set up origin and reflection 
                     context.save();
                     context.translate(ox, oy);
@@ -757,7 +644,7 @@ class Polygon {
                             if (i < genData[ind].length) eHSL[2] += (0.3 / (genData[ind].length - 1)) * i;
 
                             var store = context.lineWidth;
-                            //context.lineWidth += (4 / (genData[ind].length - 1)) * i;
+                            context.lineWidth += (4 / (genData[ind].length - 1)) * i;
 
                             var eHSL_RGB = hslToRgb(eHSL[0], eHSL[1], eHSL[2]);
                             var eRGB = new Color(eHSL_RGB[0], eHSL_RGB[1], eHSL_RGB[2]);
@@ -868,8 +755,6 @@ class PolygonTree {
 
                     this.cutSlopes = []; // the slopes used to cut
                     this.eHSL = [];
-
-                    this.mi = null;
                 } // end if
             } // end try
             catch (e) {
@@ -881,8 +766,12 @@ class PolygonTree {
         if (this.level == order.length) {
             maxLeafArea = Math.max(maxLeafArea, this.poly.area());
             minLeafArea = Math.min(minLeafArea, this.poly.area());
-            this.poly.genPT();
-            leaves.push(this.poly);
+
+            var new_mi = global_mi + Math.round(this.poly.area() / tree.poly.area() * 100.0);
+            this.mi = this.poly.mi = [global_mi, new_mi];
+            for (var i = global_mi; i < new_mi; ++i) marbles[i].poly = this.poly;
+            global_mi = new_mi;
+
             return;
         }
         if (this.tot == 0) return;
@@ -916,7 +805,11 @@ class PolygonTree {
         if (this.children.length == 0) {
             maxLeafArea = Math.max(maxLeafArea, this.poly.area());
             minLeafArea = Math.min(minLeafArea, this.poly.area());
-            leaves.push(this.poly);
+
+            var new_mi = global_mi + Math.round(this.poly.area() / tree.poly.area() * 100.0);
+            this.mi = [global_mi, new_mi];
+            for (var i = global_mi; i < new_mi; ++i) marbles[i].poly = this.poly;
+            global_mi = new_mi;
         }
     }
 
@@ -1147,7 +1040,7 @@ function createData() {
         datas.push(curr);
     }
 
-    for (var i = 0; i < 100; ++i) {
+    for (var i = 0; i < 110; ++i) {
         marbles.push(new Marble((i / 10 - 5) * marbleR * 4, (i % 10 - 5) * marbleR * 4));
     }
 }
@@ -1201,9 +1094,7 @@ function initTree() {
     }
 
     global_mi = 0;
-    leaves = [];
     tree.build();
-    distributeMarbles();
 }
 
 function initEvents() {
@@ -1237,35 +1128,31 @@ function main() {
     setInterval(game_loop, 1000 / fps);
 } // end main
 
-function edgeDstSqr(x, y, myPoly, i, j) {
-    var proj = vec2.create();
-
-    var a = vec2.fromValues(myPoly.xArray[i], myPoly.yArray[i]);
-    var b = vec2.fromValues(myPoly.xArray[j], myPoly.yArray[j]);
-    var c = vec2.fromValues(x, y);
-
-    var b_a = vec2.create();
-    vec2.subtract(b_a, b, a);
-
-    var r = vec2.dot(b_a, b_a);
-    if (Math.abs(r) < EPSILON) proj = vec2.clone(a);
-    else {
-        r = vec2.dot(vec2.subtract(vec2.create(), c, a), b_a) / r;
-        if (r < 0) proj = vec2.clone(a);
-        else if (r > 1) proj = vec2.clone(b);
-        else vec2.scaleAndAdd(proj, a, b_a, r);
-    }
-
-    return vec2.sqrDist(c, proj);
-}
-
 function findNearEdge(x, y, myPoly = tree.poly, thr = 1000) {
     var mini = Infinity;
     var ans;
 
     var i, j;
     for (var i = 0, j = 1; i < myPoly.xArray.length; ++i, j = (j + 1) % myPoly.xArray.length) {
-        var sqrD = edgeDstSqr(x, y, myPoly, i, j);
+        var proj = vec2.create();
+
+        var a = vec2.fromValues(myPoly.xArray[i], myPoly.yArray[i]);
+        var b = vec2.fromValues(myPoly.xArray[j], myPoly.yArray[j]);
+        var c = vec2.fromValues(x, y);
+
+        var b_a = vec2.create();
+        vec2.subtract(b_a, b, a);
+
+        var r = vec2.dot(b_a, b_a);
+        if (Math.abs(r) < EPSILON) proj = vec2.clone(a);
+        else {
+            r = vec2.dot(vec2.subtract(vec2.create(), c, a), b_a) / r;
+            if (r < 0) proj = vec2.clone(a);
+            else if (r > 1) proj = vec2.clone(b);
+            else vec2.scaleAndAdd(proj, a, b_a, r);
+        }
+
+        var sqrD = vec2.sqrDist(c, proj);
         if (sqrD < mini) mini = sqrD, ans = i;
     }
 
@@ -1386,27 +1273,33 @@ function hlDraw() {
         if (i !== hlNode.label.length - 1) str += ", ";
     }
 
-
+    textPrint(hl_context, str, hl_context.canvas.width, hl_context.canvas.width / 2, 0, 0, true);
 
     var perc = (myPoly.area() / tree.poly.area() * 100.0);
     perc = perc.toFixed(2) + "% of total data points";
 
-
+    var aRGB = "cyan";
+    if (myPoly.aRGB !== undefined) aRGB = myPoly.aRGB.toString();
+    textPrint(hl_context, perc, hl_context.canvas.width, hl_context.canvas.width / 2, hl_context.canvas.height - 40, 0, true, aRGB);
 
     var minx = Infinity;
     var miny = Infinity;
     var maxx = -Infinity;
     var maxy = -Infinity;
 
-    var cx = myPoly.cx;
-    var cy = myPoly.cy;
-
+    var cx = 0;
+    var cy = 0;
     for (var i = 0; i < myPoly.xArray.length; ++i) {
         minx = Math.min(minx, myPoly.xArray[i]);
         miny = Math.min(miny, myPoly.yArray[i]);
         maxx = Math.max(maxx, myPoly.xArray[i]);
         maxy = Math.max(maxy, myPoly.yArray[i]);
+
+        cx += myPoly.xArray[i];
+        cy += myPoly.yArray[i];
     }
+    cx /= (1.0 * myPoly.xArray.length);
+    cy /= (1.0 * myPoly.xArray.length);
 
     var fac = Infinity;
     fac = Math.min(fac, 320 / (maxx - minx));
@@ -1424,13 +1317,6 @@ function hlDraw() {
 
     hl_context.restore();
     inDraw = false;
-
-    textPrint(hl_context, str, hl_context.canvas.width, hl_context.canvas.width / 2, 0, 0, true);
-
-    var aRGB = "cyan";
-    if (myPoly.aRGB !== undefined) aRGB = myPoly.aRGB.toString();
-    textPrint(hl_context, perc, hl_context.canvas.width, hl_context.canvas.width / 2, hl_context.canvas.height - 40, 0, true, aRGB);
-
 }
 
 function plDraw() {
@@ -1468,7 +1354,8 @@ function plDraw() {
 function Update() {
     delT = new Date().getTime() - lastT;
     lastT += delT;
-    delT = 0.01;
+    delT /= 10;
+    delT = 10;
 
     if (mouseStat.leftClick) mouseDeal.onLeftClick();
     if (mouseStat.rightClick) mouseDeal.onRightClick();
@@ -1480,9 +1367,7 @@ function Update() {
     if (mouseStat.move) mouseDeal.onMove();
 
     if (updateRequired) {
-        noMarble = true;
-        Draw();
-        noMarble = false;
+        initTree();
 
         img1 = new Image();
         img1.src = canvas.toDataURL();
@@ -1490,11 +1375,7 @@ function Update() {
         img2 = new Image();
         img2.src = highlight.toDataURL();
 
-        initTree();
-
-        noMarble = true;
         Draw();
-        noMarble = false;
 
         img11 = new Image();
         img11.src = canvas.toDataURL();
@@ -1509,12 +1390,9 @@ function Update() {
 
         setTimeout(function() { busy = false; }, 3000);
     }
-
-    updateMarbles();
 }
 
 function drawMouse() {
-    if (noMarble) return;
     context.save();
     context.translate(canvas.width / 2, canvas.height / 2);
     context.scale(-1, -1);
@@ -1552,6 +1430,22 @@ function Draw() {
         context.globalAlpha = 1.0;
         hl_context.globalAlpha = 1.0;
 
+        for (var i = 0; i < global_mi; ++i) {
+            marbles[i].oldax = marbles[i].ax;
+            marbles[i].olday = marbles[i].ay;
+            marbles[i].ax = marbles[i].ay = 0;
+            for (var j = 0; j < global_mi; ++j) {
+                if (i == j) continue;
+                var F = marbleF;
+                if (marbles[i].poly == marbles[j].poly && marbles[i].isInside() && marbles[j].isInside()) {
+                    F = attracF / (marbles[i].poly.mi[1] - marbles[i].poly.mi[0]);
+                }
+                var A = calcForce(F, marbles[j].x, marbles[j].y, i, false, true);
+                marbles[i].ax += A[0];
+                marbles[i].ay += A[1];
+            }
+        }
+
         hlNode = null;
 
         tree.draw(context, canvas.width / 2, canvas.height / 2, -1, -1);
@@ -1559,10 +1453,14 @@ function Draw() {
         hlDraw();
 
         plDraw();
-    }
 
-    drawMouse();
-    drawMarbles();
+        drawMouse();
+
+        for (var i = 0; i < global_mi; ++i) {
+            marbles[i].update();
+            marbles[i].draw(context, canvas.width / 2, canvas.height / 2, -1, -1);
+        }
+    }
 }
 
 function game_loop() {
