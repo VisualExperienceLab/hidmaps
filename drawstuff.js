@@ -1,3 +1,5 @@
+// Main js
+
 var img1, img2;
 var img11, img22;
 var alp = 1.0;
