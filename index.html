@@ -7,11 +7,17 @@
     <script type="text/javascript" src="drawstuff.js"></script>
     <script type="text/javascript" src="mouse.js"></script>
     <script type="text/javascript" src="gl-matrix-min.js"></script>
+    <script type="text/javascript" src="jquery-3.4.1.min.js"></script>
 </head>
 
 <body onload="main();">
-    <canvas id="viewport" width="512" height="512" style="border: 1px solid black;"></canvas>
-    <canvas id="highlight" width="512" height="512" style="border: 1px solid black;"></canvas>
+    <div id="container" style="position: relative;">
+        <div id="wrapper" style="position: absolute; width: 512px; text-align: center;">
+            <div id="overlay" style="display: inline-block;"></div>
+        </div>
+        <canvas id="viewport" width="512" height="512" style="border: 1px solid black;"></canvas>
+        <canvas id="highlight" width="512" height="512" style="border: 1px solid black;"></canvas>
+    </div>
 </body>
 
 </html>

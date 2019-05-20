@@ -17,7 +17,7 @@ var busy = false;
 
 const EPSILON = 1e-6;
 
-var categories = ["gender", "age", "education", "nationality", "visualization expertise"];
+var categories = ["gender", "age", "education", "nationality", "viz_exp"];
 
 var genData = [
     ["male", "female", "trans-gender"],
@@ -36,6 +36,7 @@ var genDataP = [
 ];
 
 var order = [0, 1, 2, 3, 4];
+var chk = [true, true, true, true, true];
 
 var total = 100;
 var datas = [];
@@ -46,7 +47,7 @@ var curLevel;
 
 var hlNode = null;
 var selectEdge = null;
-var selectTree = false;
+var selectTree = true;
 
 var inDraw = false;
 
@@ -65,6 +66,8 @@ var iD = [0, 6, 8];
 
 var lastT;
 var delT;
+
+var formF;
 
 function calcForce(idst, ox, oy, dx, dy, mm) {
     var dst = Math.sqrt((ox - dx) * (ox - dx) + (oy - dy) * (oy - dy));
@@ -184,6 +187,7 @@ class Marble {
         context.translate(ox, oy);
         context.scale(rx, ry);
 
+        context.fillStyle = 'black';
         context.beginPath();
         context.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
         context.fill();
@@ -714,14 +718,10 @@ class Polygon {
 
                     context.clip();
 
-                    context.lineWidth = 6;
+                    context.lineWidth = 8;
 
                     if (context !== hl_context && treeNode == hlNode) {
-                        context.lineWidth += 6;
-
-                        if (selectTree) {
-                            selectTree = selectTree;
-                        }
+                        context.lineWidth += 4;
                     }
 
                     var seq = [];
@@ -759,7 +759,7 @@ class Polygon {
                             if (i < genData[ind].length) eHSL[2] += (0.3 / (genData[ind].length - 1)) * i;
 
                             var store = context.lineWidth;
-                            //context.lineWidth += (4 / (genData[ind].length - 1)) * i;
+                            context.lineWidth -= (4 / (order.length - 1)) * k;
 
                             var eHSL_RGB = hslToRgb(eHSL[0], eHSL[1], eHSL[2]);
                             var eRGB = new Color(eHSL_RGB[0], eHSL_RGB[1], eHSL_RGB[2]);
@@ -826,7 +826,7 @@ class Polygon {
                         context.restore();
                     }
 
-                    if (!inDraw && mouseStat.x !== null && this.isInside(mouseStat.x, mouseStat.y)) {
+                    if (!inDraw && mouseStat.x !== null && this.isInside(mouseStat.x, mouseStat.y) && treeNode.children.length == 0) {
                         hlNode = treeNode;
 
                         if (selectTree) {
@@ -880,7 +880,7 @@ class PolygonTree {
         } // end constructor
 
     build() {
-        if (this.level == order.length) {
+        if (this.level == order.length || !chk[order[this.level]]) {
             maxLeafArea = Math.max(maxLeafArea, this.poly.area());
             minLeafArea = Math.min(minLeafArea, this.poly.area());
             this.poly.genPT();
@@ -990,10 +990,12 @@ class PolygonTree {
     draw(context, ox = 0, oy = 0, rx = 1, ry = 1) {
             if (this.children.length == 0)
                 this.poly.draw(context, ox, oy, rx, ry, this);
-            else
+            else {
                 this.children.forEach(function(child) {
                     child.draw(context, ox, oy, rx, ry);
                 });
+                this.poly.draw(context, ox, oy, rx, ry, this);
+            }
         } // end draw
 } // end PolygonTree class
 
@@ -1204,6 +1206,14 @@ function initTree() {
 
     global_mi = 0;
     leaves = [];
+    for (var i = 0; i < order.length; ++i) {
+        if (categories[order[i]] == "") continue;
+        $('label[for=' + categories[order[i]] + ']').remove();
+        $("#" + categories[order[i]]).remove();
+        $(formF).append('<input type="checkbox" id = "' + categories[order[i]] + '">');
+        $(formF).append('<label for = "' + categories[order[i]] + '">' + categories[order[i]] + '</label>')
+        $("#" + categories[order[i]]).prop('checked', chk[order[i]]);
+    }
     tree.build();
     distributeMarbles();
 }
@@ -1225,6 +1235,8 @@ function main() {
 
     highlight = document.getElementById("highlight");
     hl_context = highlight.getContext("2d");
+
+    formF = $("#overlay");
 
     initEvents();
 
@@ -1388,12 +1400,8 @@ function hlDraw() {
         if (i !== hlNode.label.length - 1) str += ", ";
     }
 
-
-
     var perc = (myPoly.area() / tree.poly.area() * 100.0);
     perc = perc.toFixed(2) + "% of total data points";
-
-
 
     var minx = Infinity;
     var miny = Infinity;
@@ -1437,6 +1445,8 @@ function hlDraw() {
 
 function plDraw() {
     for (var i = 0; i < tree.poly.xArray.length; ++i) {
+        if (categories[order[i]] == "" || !chk[order[i]]) continue;
+
         var j = (i + 1) % tree.poly.xArray.length;
 
         var x1 = tree.poly.xArray[i];
@@ -1481,6 +1491,26 @@ function Update() {
     if (mouseStat.drag) mouseDeal.onDrag();
     if (mouseStat.move) mouseDeal.onMove();
 
+    for (var i = 0; i < order.length; ++i) {
+        if (categories[order[i]] == "") continue;
+        if ($("#" + categories[order[i]]).prop('checked') !== chk[order[i]]) {
+            chk[order[i]] = $("#" + categories[order[i]]).prop('checked');
+            updateRequired = true;
+        }
+    }
+
+    for (var i = 1; i < order.length; ++i) {
+        if (!chk[order[i]]) continue;
+
+        var j = i;
+        while (j > 0 && !chk[order[j - 1]]) {
+            var t = order[j];
+            order[j] = order[j - 1];
+            order[j - 1] = t;
+            --j;
+        }
+    }
+
     if (updateRequired) {
         noMarble = true;
         Draw();
@@ -1520,6 +1550,7 @@ function drawMouse() {
     context.save();
     context.translate(canvas.width / 2, canvas.height / 2);
     context.scale(-1, -1);
+    context.fillStyle = 'white';
     context.beginPath();
     context.arc(mouseStat.x, mouseStat.y, 5, 0, 2 * Math.PI);
     context.fill();

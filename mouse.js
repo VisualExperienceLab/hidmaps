@@ -77,15 +77,17 @@ class MouseActions {
 class MyMouseActions extends MouseActions {
     onLeftDown() {
         mouseCandidate = findNearEdge(mouseStat.x, mouseStat.y);
+        if (categories[order[mouseCandidate]] == "" || !chk[order[mouseCandidate]]) mouseCandidate = null;
         oldCandidate = mouseCandidate;
         mouseStat.leftDown = false;
 
-        selectTree = true;
+        //selectTree = true;
     }
 
     onLeftUp() {
         if (mouseCandidate !== null) {
             var newCandidate = findNearEdge(mouseStat.x, mouseStat.y);
+            if (categories[order[newCandidate]] == "" || !chk[order[newCandidate]]) newCandidate = null;
             if (newCandidate !== null && newCandidate !== mouseCandidate) {
                 var dir = Math.sign(newCandidate - mouseCandidate);
                 for (var i = mouseCandidate; i !== newCandidate; i += dir) {
@@ -98,7 +100,7 @@ class MyMouseActions extends MouseActions {
             }
         }
 
-        selectTree = false;
+        //selectTree = false;
 
         oldCandidate = null;
         mouseStat.leftUp = false;
@@ -110,6 +112,7 @@ class MyMouseActions extends MouseActions {
 
     onMove() {
         curCandidate = findNearEdge(mouseStat.x, mouseStat.y);
+        if (categories[order[curCandidate]] == "" || !chk[order[curCandidate]]) curCandidate = null;
         mouseStat.move = false;
     }
 }
