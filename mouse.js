@@ -16,7 +16,10 @@ var mouseStat = {
 };
 
 function handleClick(e) {
-    if (e.which == 1) mouseStat.leftClick = true;
+    if (e.which == 1){
+        mouseStat.leftClick = true;
+        clicked = true;
+    }
     else mouseStat.rightClick = true;
 }
 

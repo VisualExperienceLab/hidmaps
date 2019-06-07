@@ -17,29 +17,20 @@ var busy = false;
 
 const EPSILON = 1e-6;
 
-var categories = ["gender", "age", "education", "nationality", "viz_exp"];
+var categories = [];
 
 var genData = [
-    ["male", "female", "trans-gender"],
-    ["child", "teen", "adult", "elderly"],
-    ["grade-school", "high-school", "college", "university"],
-    ["usa", "canada"],
-    ["novice", "mediocre", "expert"]
+
 ];
 
-var genDataP = [
-    [0.48, 0.48, 0.04],
-    [0.20, 0.30, 0.35, 0.15],
-    [0.2, 0.4, 0.3, 0.1],
-    [0.85, 0.15],
-    [0.4, 0.4, 0.2]
-];
+var order = [];
+var chk = [];
 
-var order = [0, 1, 2, 3, 4];
-var chk = [true, true, true, true, true];
-
-var total = 100;
+var total;
 var datas = [];
+
+var clicked = false;
+var stack = [];
 
 var tree;
 
@@ -68,6 +59,22 @@ var lastT;
 var delT;
 
 var formF;
+
+function back(){
+    var top = stack.length - 1;
+    for(var i = 0; i < stack[top][0].length; ++i){
+        genData[i] = stack[top][0][i].slice(0);
+    }
+    datas = stack[top][1].slice(0);
+    total = stack[top][2];
+    stack.pop();
+
+    updateRequired = true;
+
+    if(stack.length == 0){
+        $("#back").remove();
+    }
+}
 
 function calcForce(idst, ox, oy, dx, dy, mm) {
     var dst = Math.sqrt((ox - dx) * (ox - dx) + (oy - dy) * (oy - dy));
@@ -880,7 +887,7 @@ class PolygonTree {
         } // end constructor
 
     build() {
-        if (this.level == order.length || !chk[order[this.level]]) {
+        if (this.level == order.length) {
             maxLeafArea = Math.max(maxLeafArea, this.poly.area());
             minLeafArea = Math.min(minLeafArea, this.poly.area());
             this.poly.genPT();
@@ -899,6 +906,7 @@ class PolygonTree {
             cur = genData[ind][i];
             for (var j = 0; j < datas.length; ++j) {
                 for (var k = 0; k < this.label.length; ++k) {
+                    if(!chk[order[k]]) continue;
                     if (datas[j][order[k]] != this.label[k]) break;
                 }
 
@@ -911,6 +919,8 @@ class PolygonTree {
 
         curLevel = this.level;
         if (freq.length == 0) freq.push(1.0);
+        if(!chk[order[this.level]])
+            freq = [1.0];
         this.split(freq, tree.cutSlopes[this.level]);
 
         for (var i = 0; i < this.children.length; ++i) this.children[i].build();
@@ -969,7 +979,8 @@ class PolygonTree {
                         normedArea = areas[whichArea] / remainingArea;
                         splitPolys = remainingPoly.splitByArea(normedArea, slope); // make subpoly matching pres area
                         var newLabel = this.label.slice();
-                        newLabel.push(genData[order[this.level]][whichArea]);
+                        if(chk[order[this.level]])
+                            newLabel.push(genData[order[this.level]][whichArea]);
                         this.addChild(new PolygonTree(splitPolys[0], Math.round(areas[whichArea] * this.tot), newLabel, this.level + 1)); // make a matching child
                         remainingPoly = splitPolys[1];
                         remainingArea = remainingPoly.area() / orgArea;
@@ -1136,22 +1147,38 @@ class Color {
 
 } // end color class
 
-function createData() {
-    for (var i = 0; i < total; ++i) {
-        var curr = [];
-        for (var j = 0; j < order.length; ++j) {
-            var cumulative = 0;
-            var probability = Math.random();
-            for (var k = 0; k < genDataP.length; ++k) {
-                cumulative += genDataP[j][k];
-                if (probability < cumulative) break;
-            }
-            curr.push(genData[j][k]);
-        }
-        datas.push(curr);
+function loadData(){
+    try{
+        var httpReq = new XMLHttpRequest(); // a new http request
+        httpReq.open("GET", "my_data.csv", false); // init the request
+        httpReq.send(null); // send the request
+        var startTime = Date.now();
+        while ((httpReq.status !== 200) && (httpReq.readyState !== XMLHttpRequest.DONE)) {
+            if ((Date.now() - startTime) > 3000) break;
+        } // until its loaded or we time out after three seconds
+        if ((httpReq.status !== 200) || (httpReq.readyState !== XMLHttpRequest.DONE))
+            throw "Unable to open " + descr + " file!";
+        else
+            datas = $.csv.toArrays(httpReq.response);
+    }
+    catch(e){
+        console.log(e);
     }
 
-    for (var i = 0; i < 100; ++i) {
+    categories = datas[0].slice(0);
+    datas = datas.slice(1);
+    total = datas.length;
+    for(var i = 0; i < categories.length; ++i){
+        order.push(i);
+        chk.push(true);
+        var temp = [];
+        for(var j = 0; j < datas.length; ++j){
+            temp.push(datas[j][i]);
+        }
+        genData.push(Array.from(new Set(temp)));
+    }
+
+    for (var i = 0; i < total; ++i) {
         marbles.push(new Marble((i / 10 - 5) * marbleR * 4, (i % 10 - 5) * marbleR * 4));
     }
 }
@@ -1162,8 +1189,6 @@ function fix() {
     categories.push("");
 
     genData.push([]);
-
-    genDataP.push([]);
 
     order.push(order.length);
 }
@@ -1240,7 +1265,9 @@ function main() {
 
     initEvents();
 
-    createData();
+    //createData();
+
+    loadData();
 
     fix();
 
@@ -1334,7 +1361,7 @@ function textPrint(context, str, maxWidth, ox, oy, rot, isNormal, RGB = "cyan") 
     context.textAlign = "left";
 
     var totLines = Math.ceil(context.measureText(str).width / maxWidth);
-    var newWidth = Math.min(Math.ceil(context.measureText(str).width / totLines) + 1, maxWidth);
+    var newWidth = Math.min(Math.ceil(context.measureText(str).width / totLines) + 5, maxWidth);
 
     var i = 0;
     var curX = -Math.min(context.measureText(str).width, newWidth) / 2;
@@ -1394,7 +1421,7 @@ function hlDraw() {
 
     var str = "";
     for (var i = 0; i < hlNode.label.length; ++i) {
-        if (categories[order[i]] == "") continue;
+        if (categories[order[i]] == "" || !chk[order[i]]) continue;
         str += categories[order[i]] + ": ";
         str += hlNode.label[i];
         if (i !== hlNode.label.length - 1) str += ", ";
@@ -1499,16 +1526,48 @@ function Update() {
         }
     }
 
-    for (var i = 1; i < order.length; ++i) {
-        if (!chk[order[i]]) continue;
+    if(clicked){
+        if(hlNode !== null){
+            var newGenData = [];
+            for(var i = 0; i < genData.length; ++i){
+                newGenData.push(genData[i].slice(0));
+            }
+            stack.push([newGenData, datas.slice(0), total]);
+            
+            for(var i = 0; i < genData.length; ++i){
+                for(var j = 0; j < hlNode.label.length; ++j){
+                    for(var k = 0; k < genData[i].length; ++k){
+                        if(genData[i][k] == hlNode.label[j]) break;
+                    }
+                    if(k < genData[i].length){
+                        genData[i] = [genData[i][k]];
+                        break;
+                    }
+                }
+            }
 
-        var j = i;
-        while (j > 0 && !chk[order[j - 1]]) {
-            var t = order[j];
-            order[j] = order[j - 1];
-            order[j - 1] = t;
-            --j;
+            for(var i = 0; i < datas.length; ++i){
+                for(var j = 0; j < hlNode.label.length; ++j){
+                    for(var k = 0; k < datas[i].length; ++k){
+                        if(datas[i][k] == hlNode.label[j]) break;
+                    }
+                    if(k == datas[i].length) break;
+                }
+                if(j < hlNode.label.length){
+                    datas = datas.slice(0, i).concat(datas.slice(i + 1));
+                    --i;
+                }
+            }
+
+            total = datas.length;
+
+            updateRequired = true;
+
+            if(stack.length == 1){
+                $("#backbutton").append('<input id = "back" type="button" value="go back in hierarchy" onclick="back()" />');
+            }
         }
+        clicked = false;
     }
 
     if (updateRequired) {
