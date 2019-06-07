@@ -92,6 +92,13 @@ function distributeMarbles() {
     for (var p = 0; p < leaves.length; ++p) {
         var poly = leaves[p];
         var new_mi = global_mi + Math.round(poly.area() / tree.poly.area() * 100.0);
+
+        if(new_mi > marbles.length){
+            for (var i = marbles.length; i < new_mi; ++i) {
+                marbles.push(new Marble((i / 10 - 5) * marbleR * 4, (i % 10 - 5) * marbleR * 4));
+            }
+        }
+
         for (var i = global_mi; i < new_mi; ++i) {
             var ret = poly.findClosest(i);
             marbles = marbles.slice(0, i).concat(marbles.slice(ret[0], ret[0] + 1)).concat(marbles.slice(i, ret[0])).concat(marbles.slice(ret[0] + 1));
@@ -1176,10 +1183,6 @@ function loadData(){
             temp.push(datas[j][i]);
         }
         genData.push(Array.from(new Set(temp)).sort());
-    }
-
-    for (var i = 0; i < total; ++i) {
-        marbles.push(new Marble((i / 10 - 5) * marbleR * 4, (i % 10 - 5) * marbleR * 4));
     }
 }
 
