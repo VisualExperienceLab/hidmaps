@@ -1175,7 +1175,7 @@ function loadData(){
         for(var j = 0; j < datas.length; ++j){
             temp.push(datas[j][i]);
         }
-        genData.push(Array.from(new Set(temp)));
+        genData.push(Array.from(new Set(temp)).sort());
     }
 
     for (var i = 0; i < total; ++i) {
