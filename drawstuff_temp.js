@@ -89,9 +89,17 @@ function calcForce(idst, ox, oy, dx, dy, mm) {
 }
 
 function distributeMarbles() {
+    var new_mi;
     for (var p = 0; p < leaves.length; ++p) {
         var poly = leaves[p];
-        var new_mi = global_mi + Math.round(poly.area() / tree.poly.area() * 100.0);
+        new_mi = global_mi + Math.round(poly.area() / tree.poly.area() * 100.0);
+
+        if(new_mi > marbles.length){
+            for (var i = marbles.length; i < new_mi; ++i) {
+                marbles.push(new Marble((i / 10 - 5) * marbleR * 4, (i % 10 - 5) * marbleR * 4));
+            }
+        }
+
         for (var i = global_mi; i < new_mi; ++i) {
             var ret = poly.findClosest(i);
             marbles = marbles.slice(0, i).concat(marbles.slice(ret[0], ret[0] + 1)).concat(marbles.slice(i, ret[0])).concat(marbles.slice(ret[0] + 1));
@@ -101,6 +109,7 @@ function distributeMarbles() {
         leaves[p].mi = [global_mi, new_mi];
         global_mi = new_mi;
     }
+    if(marbles.length > new_mi) marbles = marbles.slice(0, new_mi);
 }
 
 function updateMarbles() {
@@ -979,8 +988,7 @@ class PolygonTree {
                         normedArea = areas[whichArea] / remainingArea;
                         splitPolys = remainingPoly.splitByArea(normedArea, slope); // make subpoly matching pres area
                         var newLabel = this.label.slice();
-                        if(chk[order[this.level]])
-                            newLabel.push(genData[order[this.level]][whichArea]);
+                        newLabel.push(genData[order[this.level]][whichArea]);
                         this.addChild(new PolygonTree(splitPolys[0], Math.round(areas[whichArea] * this.tot), newLabel, this.level + 1)); // make a matching child
                         remainingPoly = splitPolys[1];
                         remainingArea = remainingPoly.area() / orgArea;
@@ -1166,6 +1174,7 @@ function loadData(){
     }
 
     categories = datas[0].slice(0);
+    for(var i = 0; i < categories.length; ++i) categories[i] = categories[i].replace(/[^A-Za-z-_:.]/g, '_');
     datas = datas.slice(1);
     total = datas.length;
     for(var i = 0; i < categories.length; ++i){
@@ -1176,10 +1185,6 @@ function loadData(){
             temp.push(datas[j][i]);
         }
         genData.push(Array.from(new Set(temp)).sort());
-    }
-
-    for (var i = 0; i < total; ++i) {
-        marbles.push(new Marble((i / 10 - 5) * marbleR * 4, (i % 10 - 5) * marbleR * 4));
     }
 }
 
@@ -1534,24 +1539,19 @@ function Update() {
             }
             stack.push([newGenData, datas.slice(0), total]);
             
-            for(var i = 0; i < genData.length; ++i){
-                for(var j = 0; j < hlNode.label.length; ++j){
-                    for(var k = 0; k < genData[i].length; ++k){
-                        if(genData[i][k] == hlNode.label[j]) break;
-                    }
-                    if(k < genData[i].length){
-                        genData[i] = [genData[i][k]];
-                        break;
-                    }
+            for(var j = 0; j < hlNode.label.length; ++j){
+                for(var k = 0; k < genData[order[j]].length; ++k){
+                    if(genData[order[j]][k] == hlNode.label[j]) break;
+                }
+                if(k < genData[order[j]].length){
+                    genData[order[j]] = [genData[order[j]][k]];
+                    break;
                 }
             }
 
             for(var i = 0; i < datas.length; ++i){
                 for(var j = 0; j < hlNode.label.length; ++j){
-                    for(var k = 0; k < datas[i].length; ++k){
-                        if(datas[i][k] == hlNode.label[j]) break;
-                    }
-                    if(k == datas[i].length) break;
+                    if(hlNode.label[j] !== datas[i][order[j]]) break;
                 }
                 if(j < hlNode.label.length){
                     datas = datas.slice(0, i).concat(datas.slice(i + 1));
