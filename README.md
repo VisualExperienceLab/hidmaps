@@ -1,3 +1,5 @@
-# introcg-prog1
+# Hi-D Maps
 
-This project contains a simple js program that helps begin program 1.
+This project contains a novel visualization technique for presenting multi-dimensional categorical data.
+
+Link to our visualization: https://pages.github.ncsu.edu/vxlab/ninjapie2/
