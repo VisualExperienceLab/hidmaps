@@ -13,10 +13,17 @@
 
 <body onload="main();">
     <div id="container" style="position: relative;">
-        <div id="wrapper" style="position: absolute; width: 512px; top: 520px; text-align: center;">
+        <div id="wrapper" style="position: absolute; width: 512px; top: 520px; text-align: center; font: 20px Times New Roman;">
             <div id="overlay" style="display: inline-block;"></div>
         </div>
-        <div id = "backbutton" style="position: absolute; width: 512px; top: 485px; text-align: center; display:inline-block;"></div>
+        <div id = "backbutton" style="position: absolute; width: 512px; top: 1px; text-align: center; display:inline-block;"></div>
+        <div id = "buttons" style="position: absolute; width: 512px; top: 1px; text-align: left; display:inline-block;">
+            <form action="upload.php" method="post" enctype="multipart/form-data">
+                <button style="position: absolute; left: 1px; display: block; width: 76px; height: 51px; font: 20px Times New Roman;"
+                    onclick="document.getElementById('fileToUpload').click()">upload csv</button>
+                <input type="file" style="display: none;" id="fileToUpload" value="upload csv" onchange="this.form.submit()" >
+            </form>
+        </div>
         <canvas id="viewport" width="512" height="512" style="border: 1px solid black;"></canvas>
         <canvas id="highlight" width="512" height="512" style="border: 1px solid black;"></canvas>
     </div>

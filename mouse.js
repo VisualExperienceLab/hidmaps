@@ -2,6 +2,8 @@ var mouseCandidate = null;
 var curCandidate = null;
 var oldCandidate = null;
 
+var lastX, lastY;
+
 var mouseStat = {
     x: null,
     y: null,
@@ -16,10 +18,7 @@ var mouseStat = {
 };
 
 function handleClick(e) {
-    if (e.which == 1){
-        mouseStat.leftClick = true;
-        clicked = true;
-    }
+    if (e.which == 1) mouseStat.leftClick = true;
     else mouseStat.rightClick = true;
 }
 
@@ -78,13 +77,19 @@ class MouseActions {
 }
 
 class MyMouseActions extends MouseActions {
+    onLeftClick() {
+        if(Math.abs(mouseStat.x - lastX) < EPSILON && Math.abs(mouseStat.y - lastY) < EPSILON) clicked = true;
+        mouseStat.leftClick = false;
+    }
+
     onLeftDown() {
         mouseCandidate = findNearEdge(mouseStat.x, mouseStat.y);
         if (categories[order[mouseCandidate]] == "" || !chk[order[mouseCandidate]]) mouseCandidate = null;
         oldCandidate = mouseCandidate;
         mouseStat.leftDown = false;
 
-        //selectTree = true;
+        lastX = mouseStat.x;
+        lastY = mouseStat.y;
     }
 
     onLeftUp() {
@@ -107,10 +112,6 @@ class MyMouseActions extends MouseActions {
 
         oldCandidate = null;
         mouseStat.leftUp = false;
-    }
-
-    onDrag() {
-
     }
 
     onMove() {

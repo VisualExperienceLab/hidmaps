@@ -1,5 +1,7 @@
 // Main js
 
+var FILENAME = "my_data.csv";
+
 var img1, img2;
 var img11, img22;
 var alp = 1.0;
@@ -1158,7 +1160,7 @@ class Color {
 function loadData(){
     try{
         var httpReq = new XMLHttpRequest(); // a new http request
-        httpReq.open("GET", "my_data.csv", false); // init the request
+        httpReq.open("GET", FILENAME, false); // init the request
         httpReq.send(null); // send the request
         var startTime = Date.now();
         while ((httpReq.status !== 200) && (httpReq.readyState !== XMLHttpRequest.DONE)) {
@@ -1257,6 +1259,11 @@ function initEvents() {
     mouseDeal = new MyMouseActions();
 }
 
+function initForms(){
+    $("#buttons").append('<form method="get" action=' + FILENAME +'>' + '\n' +
+        '<button id = "download" style="position: absolute; left: 419px; font: 20px Times New Roman;" type="submit">download csv</button>' +
+    '</form>');
+}
 
 /* main -- here is where execution begins after window load */
 function main() {
@@ -1270,13 +1277,13 @@ function main() {
 
     initEvents();
 
-    //createData();
-
     loadData();
 
     fix();
 
     initTree();
+
+    initForms();
 
     lastT = new Date().getTime();
 
@@ -1332,7 +1339,7 @@ function pickRGB(context, str) {
         var eHSL_RGB = hslToRgb(eHSL[0], eHSL[1], eHSL[2]);
         eRGB = new Color(eHSL_RGB[0], eHSL_RGB[1], eHSL_RGB[2]);
 
-        context.font = "bold 18px Times New Roman";
+        context.font = "bold 20px Times New Roman";
         context.fillStyle = eRGB.toString();
     } else {
         for (i = 0; i < order.length; ++i) {
@@ -1349,7 +1356,7 @@ function pickRGB(context, str) {
                 var eHSL_RGB = hslToRgb(eHSL[0], eHSL[1], eHSL[2]);
                 eRGB = new Color(eHSL_RGB[0], eHSL_RGB[1], eHSL_RGB[2]);
 
-                context.font = "18px Times New Roman";
+                context.font = "20px Times New Roman";
                 context.fillStyle = eRGB.toString();
             }
         }
@@ -1361,12 +1368,12 @@ function textPrint(context, str, maxWidth, ox, oy, rot, isNormal, RGB = "cyan") 
     context.translate(ox, oy);
     context.rotate(rot);
 
-    context.font = "18px Times New Roman";
+    context.font = "20px Times New Roman";
     context.fillStyle = RGB;
     context.textAlign = "left";
 
     var totLines = Math.ceil(context.measureText(str).width / maxWidth);
-    var newWidth = Math.min(Math.ceil(context.measureText(str).width / totLines) + 5, maxWidth);
+    var newWidth = Math.min(Math.ceil(context.measureText(str).width / totLines) + 20, maxWidth);
 
     var i = 0;
     var curX = -Math.min(context.measureText(str).width, newWidth) / 2;
@@ -1382,7 +1389,8 @@ function textPrint(context, str, maxWidth, ox, oy, rot, isNormal, RGB = "cyan") 
         if (ch !== ':' && ch !== ',') {
             pr += ch;
             if (newX + context.measureText(pr).width >= newWidth) {
-                if (str.length > 1 && str.charAt(1) !== " " && str.charAt(1) !== "," && str.charAt(1) !== ":") pr += '-';
+                if (str.length > 1 && str.charAt(1) !== " " && str.charAt(1) !== "," && str.charAt(1) !== ":"
+                    && ch !== "-" && str.charAt(1) !== "-") pr += '-';
                 crossed = true;
             }
         } else {
@@ -1391,8 +1399,8 @@ function textPrint(context, str, maxWidth, ox, oy, rot, isNormal, RGB = "cyan") 
 
             if (newX + context.measureText(pr).width >= newWidth) crossed = true;
 
-            if (isNormal) context.fillText(pr, curX, 24 + 18 * i);
-            else context.fillText(pr, curX, -18 * totLines + 18 * i);
+            if (isNormal) context.fillText(pr, curX, 24 + 20 * i);
+            else context.fillText(pr, curX, -20 * totLines + 20 * i);
 
             curX += context.measureText(pr).width;
             newX += context.measureText(pr).width;
@@ -1403,8 +1411,8 @@ function textPrint(context, str, maxWidth, ox, oy, rot, isNormal, RGB = "cyan") 
         str = str.slice(1);
 
         if (crossed) {
-            if (isNormal) context.fillText(pr, curX, 24 + 18 * i);
-            else context.fillText(pr, curX, -18 * totLines + 18 * i);
+            if (isNormal) context.fillText(pr, curX, 24 + 20 * i);
+            else context.fillText(pr, curX, -20 * totLines + 20 * i);
 
             pr = "";
             curX = -Math.min(context.measureText(str).width, newWidth) / 2;
@@ -1414,8 +1422,8 @@ function textPrint(context, str, maxWidth, ox, oy, rot, isNormal, RGB = "cyan") 
             crossed = false;
         }
     }
-    if (isNormal) context.fillText(pr, curX, 24 + 18 * i);
-    else context.fillText(pr, curX, -18 * totLines + 18 * i);
+    if (isNormal) context.fillText(pr, curX, 24 + 20 * i);
+    else context.fillText(pr, curX, -20 * totLines + 20 * i);
 
     context.restore();
 }
@@ -1433,7 +1441,7 @@ function hlDraw() {
     }
 
     var perc = (myPoly.area() / tree.poly.area() * 100.0);
-    perc = perc.toFixed(2) + "% of total data points";
+    perc = perc.toFixed(2) + "% of " + (stack.length == 0 ? "total" : "selected") + " data points";
 
     var minx = Infinity;
     var miny = Infinity;
@@ -1467,11 +1475,11 @@ function hlDraw() {
     hl_context.restore();
     inDraw = false;
 
-    textPrint(hl_context, str, hl_context.canvas.width, hl_context.canvas.width / 2, 0, 0, true);
+    textPrint(hl_context, str, hl_context.canvas.width - 20, hl_context.canvas.width / 2, 0, 0, true);
 
     var aRGB = "cyan";
     if (myPoly.aRGB !== undefined) aRGB = myPoly.aRGB.toString();
-    textPrint(hl_context, perc, hl_context.canvas.width, hl_context.canvas.width / 2, hl_context.canvas.height - 40, 0, true, aRGB);
+    textPrint(hl_context, perc, hl_context.canvas.width - 20, hl_context.canvas.width / 2, hl_context.canvas.height - 30, 0, true, aRGB);
 
 }
 
@@ -1506,6 +1514,14 @@ function plDraw() {
         }
 
         textPrint(context, prStr, dst, tx, ty, rot, isNormal);
+    }
+
+    if(stack.length > 0){
+        var perc = (total / stack[0][2] * 100.0);
+        perc = perc.toFixed(2) + "% of " + "total" + " data points";
+
+        var aRGB = "cyan";
+        textPrint(context, perc, context.canvas.width - 20, context.canvas.width / 2, context.canvas.height - 30, 0, true, aRGB);
     }
 }
 
@@ -1545,7 +1561,6 @@ function Update() {
                 }
                 if(k < genData[order[j]].length){
                     genData[order[j]] = [genData[order[j]][k]];
-                    break;
                 }
             }
 
@@ -1564,7 +1579,7 @@ function Update() {
             updateRequired = true;
 
             if(stack.length == 1){
-                $("#backbutton").append('<input id = "back" type="button" value="go back in hierarchy" onclick="back()" />');
+                $("#backbutton").append('<button id = "back" onclick="back()" style="font: 20px Times New Roman;">go back in hierarchy</button>');
             }
         }
         clicked = false;
