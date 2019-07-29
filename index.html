@@ -18,11 +18,8 @@
         </div>
         <div id = "backbutton" style="position: absolute; width: 512px; top: 1px; text-align: center; display:inline-block;"></div>
         <div id = "buttons" style="position: absolute; width: 512px; top: 1px; text-align: left; display:inline-block;">
-            <form action="upload.php" method="post" enctype="multipart/form-data">
-                <button style="position: absolute; left: 1px; display: block; width: 76px; height: 51px; font: 20px Times New Roman;"
-                    onclick="document.getElementById('fileToUpload').click()">upload csv</button>
-                <input type="file" style="display: none;" id="fileToUpload" value="upload csv" onchange="this.form.submit()" >
-            </form>
+            <button style="position: absolute; left: 1px; display: block; width: 76px; height: 51px; font: 20px Times New Roman;"
+                onclick="alert('Not supported in demo!')">upload csv</button>
         </div>
         <canvas id="viewport" width="512" height="512" style="border: 1px solid black;"></canvas>
         <canvas id="highlight" width="512" height="512" style="border: 1px solid black;"></canvas>
