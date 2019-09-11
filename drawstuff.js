@@ -1261,7 +1261,7 @@ function initEvents() {
 
 function initForms(){
     $("#buttons").append('<form method="get" action=' + FILENAME +'>' + '\n' +
-        '<button id = "download" style="position: absolute; left: 419px; width: 93px; height: 51px; font: 20px Times New Roman;" type="submit">download csv</button>' +
+        '<button id = "download" style="position: absolute; left: 420px; width: 93px; height: 51px; font: 20px Times New Roman;" type="submit">download csv</button>' +
     '</form>');
 }
 
